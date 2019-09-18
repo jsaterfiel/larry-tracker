@@ -1,0 +1,33 @@
+version: "3.7"
+services:
+  api:
+    build: ./api
+    image: larry-tracker/api:latest
+    ports:
+      - 8181:8181
+    volumes:
+      - ./api/src:/usr/src/app/src
+      - ./api/tests:/usr/src/app/tests
+  ui-admin:
+    build:
+      context: ./ui-admin
+      dockerfile: dev.Dockerfile
+    image: larry-tracker/ui-admin:latest
+    volumes:
+      - ./ui-admin/src:/usr/src/app/src
+      - ./ui-admin/public:/usr/src/app/public
+    ports:
+      - 8080:8080
+  ch-server-1:
+    image: yandex/clickhouse-server
+    volumes:
+      - ./db/config.xml:/etc/clickhouse-server/config.d/local.xml
+      - ./db/macros1.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./db/data/1:/var/lib/clickhouse
+    ports:
+      - 8123:8123
+      - 9000:9000
+      - 9009:9009
+  ch-client:
+    image: yandex/clickhouse-client
+    command: ['--host', 'ch-server-1']

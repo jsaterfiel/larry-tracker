@@ -30,7 +30,7 @@ bower_components
 .lock-wscript
 
 # Compiled binary addons (https://nodejs.org/api/addons.html)
-build/Release
+ui-admin/build/
 
 # Dependency directories
 node_modules/
@@ -59,3 +59,13 @@ typings/
 
 # next.js build output
 .next
+
+# temporarily just ignore the data folder till we have schemas to use here and sample data
+db/data
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local

@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+  api:
+    build: ./api
+    image: larry-tracker/api:latest
+    ports:
+      - 8181:8181
+  ui-admin:
+    build: ./ui-admin
+    image: larry-tracker/ui-admin:latest
+    ports:
+      - 8080:8080
+  ch-server-1:
+    image: yandex/clickhouse-server
+    volumes:
+      - ./db/config.xml:/etc/clickhouse-server/config.d/local.xml
+      - ./db/macros1.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./db/data/1:/var/lib/clickhouse
+    ports:
+      - 8123:8123
+      - 9000:9000
+      - 9009:9009
+  ch-server-2:
+    image: yandex/clickhouse-server
+    volumes:
+      - ./db/config.xml:/etc/clickhouse-server/config.d/local.xml
+      - ./db/macros2.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./db/data/2:/var/lib/clickhouse
+  ch-server-3:
+    image: yandex/clickhouse-server
+    volumes:
+      - ./db/config.xml:/etc/clickhouse-server/config.d/local.xml
+      - ./db/macros3.xml:/etc/clickhouse-server/config.d/macros.xml
+      - ./db/data/3:/var/lib/clickhouse
+  zookeeper:
+    image: zookeeper
