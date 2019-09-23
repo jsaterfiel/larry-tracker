@@ -1,8 +1,10 @@
 version: "3.7"
 services:
   api:
-    build: ./api
-    image: larry-tracker/api:latest
+    build:
+      context: ./api
+      dockerfile: dev.Dockerfile
+    image: larry-tracker/api-dev:latest
     ports:
       - 8181:8181
     volumes:
@@ -12,7 +14,7 @@ services:
     build:
       context: ./ui-admin
       dockerfile: dev.Dockerfile
-    image: larry-tracker/ui-admin:latest
+    image: larry-tracker/ui-admin-dev:latest
     volumes:
       - ./ui-admin/src:/usr/src/app/src
       - ./ui-admin/public:/usr/src/app/public
