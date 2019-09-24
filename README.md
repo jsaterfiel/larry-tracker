@@ -48,3 +48,6 @@ docker-compose -f docker-compose.prod.yml build --no-cache --force-rm
 
 ## Working with DB
 TODO
+
+## Working with Architecture and Development Plan
+In progress
