@@ -1,5 +1,5 @@
-drop table `default`.byClientLevels;
-drop table `default`.impressions;
+drop table if exists `default`.byClientLevels;
+drop table if exists `default`.impressions;
 
 CREATE TABLE `default`.impressions (
 	client_code String,
