@@ -4,11 +4,21 @@ node_js:
 
 services:
   - docker
+addons:
+  apt:
+    packages:
+      - docker-ce
 
 before_install:
-- docker-compose up -d
-- cat db/scripts/schema.sql | docker run -i --rm --network larry-tracker_default --link larry-tracker_ch-server-1_1:ch-server-1 yandex/clickhouse-client -m --host ch-server-1 --database default --multiquery
-- cat db/scripts/sample1.sql | docker run -i --rm --network larry-tracker_default --link larry-tracker_ch-server-1_1:ch-server-1 yandex/clickhouse-client -m --host ch-server-1 --database default --multiquery
+  - sudo rm /usr/local/bin/docker-compose 
+  - curl -L https://github.com/docker/compose/releases/download/1.25.0-rc2/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+  - docker-compose up -d
+  - sleep 15
+  - docker network ls
+  - cat db/scripts/schema.sql | docker run -i --rm --network larry-tracker_default --link larry-tracker_ch-server-1_1:ch-server-1 yandex/clickhouse-client -m --host ch-server-1 --database default --multiquery
+  - cat db/scripts/sample1.sql | docker run -i --rm --network larry-tracker_default --link larry-tracker_ch-server-1_1:ch-server-1 yandex/clickhouse-client -m --host ch-server-1 --database default --multiquery
 
 script:
   - yarn
