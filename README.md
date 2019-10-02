@@ -1,4 +1,5 @@
 # Larry-Tracker
+[![Build Status](https://travis-ci.org/jsaterfiel/larry-tracker.svg?branch=master)](https://travis-ci.org/jsaterfiel/larry-tracker)
 
 ## Dev Commands
 Starting everything from project root directory
