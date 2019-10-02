@@ -22,4 +22,7 @@ before_install:
 
 script:
   - yarn
+  - cd api
+  - yarn
+  - cd ..
   - ./node_modules/mocha/bin/mocha --recursive "./api/src/*.test.js"
