@@ -4,8 +4,14 @@
   "private": true,
   "dependencies": {
     "body-parser": "^1.18.2",
+    "clickhouse": "^1.2.21",
+    "cookie-parser": "^1.4.4",
     "cors": "^2.8.4",
     "express": "^4.16.3",
     "nodemon": "^1.19.2"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.1",
+    "supertest": "^4.0.2"
   }
 }

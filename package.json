@@ -1,0 +1,30 @@
+{
+  "name": "larry-tracker",
+  "version": "1.0.0",
+  "description": "## Dev Commands Starting everything from project root directory",
+  "main": "index.js",
+  "dependencies": {
+    "eslint": "^6.4.0",
+    "eslint-plugin-flowtype": "^4.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.1.1",
+    "mocha": "^6.2.1",
+    "nyc": "^14.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jsaterfiel/larry-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jsaterfiel/larry-tracker/issues"
+  },
+  "homepage": "https://github.com/jsaterfiel/larry-tracker#readme"
+}

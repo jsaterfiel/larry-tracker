@@ -4,6 +4,6 @@
         <r0replica>00</r0replica>
         <r1shard>01</r1shard>
         <r1replica>01</r1replica>
-        <cluster>ontime_cluster</cluster>
+        <cluster>impression_cluster</cluster>
     </macros>
 </yandex>

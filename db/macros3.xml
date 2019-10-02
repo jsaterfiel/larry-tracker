@@ -1,9 +1,10 @@
 <yandex>
+    <zookeeper incl="zookeeper-servers" optional="true" />
     <macros replace="replace">
         <r0shard>02</r0shard>
         <r0replica>00</r0replica>
         <r1shard>00</r1shard>
         <r1replica>01</r1replica>
-        <cluster>ontime_cluster</cluster>
+        <cluster>impression_cluster</cluster>
     </macros>
 </yandex>

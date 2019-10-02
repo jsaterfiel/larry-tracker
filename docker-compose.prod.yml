@@ -5,11 +5,24 @@ services:
     image: larry-tracker/api:latest
     ports:
       - 8181:8181
+    depends_on:
+      - ch-server-1
+      - ch-server-2
+      - ch-server-3
   ui-admin:
     build: ./ui-admin
     image: larry-tracker/ui-admin:latest
     ports:
       - 8080:8080
+  test-site:
+    build:
+      context: ./test-site
+      dockerfile: Dockerfile
+    image: larry-tracker/test-site
+    ports:
+      - 8282:8282
+    volumes:
+      - ./test-site/site:/usr/src/app/site
   ch-server-1:
     image: yandex/clickhouse-server
     volumes:

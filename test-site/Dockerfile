@@ -7,12 +7,10 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package.json ./
 COPY yarn.lock ./
-COPY build ./
+COPY site ./
 
 RUN yarn
 
-RUN [ "yarn", "build" ]
+EXPOSE 8282
 
-EXPOSE 8383
-
-CMD [ "node_modules/.bin/serve", "-s", "-l", "8383", "build" ]
+CMD [ "node_modules/.bin/serve", "-s", "-l", "8282", "site" ]

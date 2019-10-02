@@ -10,6 +10,17 @@ services:
     volumes:
       - ./api/src:/usr/src/app/src
       - ./api/tests:/usr/src/app/tests
+    depends_on:
+      - ch-server-1
+  test-site:
+    build:
+      context: ./test-site
+      dockerfile: Dockerfile
+    image: larry-tracker/test-site
+    ports:
+      - 8282:8282
+    volumes:
+      - ./test-site/site:/usr/src/app/site
   ui-admin:
     build:
       context: ./ui-admin
@@ -30,6 +41,4 @@ services:
       - 8123:8123
       - 9000:9000
       - 9009:9009
-  ch-client:
-    image: yandex/clickhouse-client
-    command: ['--host', 'ch-server-1']
+
