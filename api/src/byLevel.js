@@ -62,7 +62,7 @@ const api = {
       whereClause = 'WHERE ' + whereClauses.join(' and ');
     }
     // select client_code, level1_id, start_date, countState(dentsu_ots) as dentsu_ots, avgState(total_dwell_time) as total_dwell_time, avgState(half_in_view_time) as half_in_view_time, countState(clicked) as clicked, countState(interaction) as interaction, countState(was_ever_fully_in_view) as was_ever_fully_in_view, countState(ivt) as ivt
-    const query = `SELECT start_date, sum(dentsu_ots) as dentsu_ots, avg(total_dwell_time)/1000 as total_dwell_time, avg(half_in_view_time)/1000 as half_in_view_time, sum(clicked) as clicked, sum(interaction) as interaction, sum(was_ever_fully_in_view) as was_ever_fully_in_view, sum(ivt) as ivt
+    const query = `SELECT start_date, sum(impressions) as impressions, sum(dentsu_ots) as dentsu_ots, avg(total_dwell_time)/1000 as total_dwell_time, avg(half_in_view_time)/1000 as half_in_view_time, sum(clicked) as clicked, sum(interaction) as interaction, sum(was_ever_fully_in_view) as was_ever_fully_in_view, sum(ivt) as ivt
     FROM \`default\`.byClientLevels
     ${whereClause}
     group by start_date

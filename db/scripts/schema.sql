@@ -27,8 +27,8 @@ ORDER BY (
 );
 
 CREATE VIEW `default`.byClientLevels
-AS select client_code, level1_id, start_date, sum(dentsu_ots) as dentsu_ots, avg(total_dwell_time) as total_dwell_time, avg(half_in_view_time) as half_in_view_time, sum(clicked) as clicked, sum(interaction) as interaction, sum(was_ever_fully_in_view) as was_ever_fully_in_view, sum(ivt) as ivt
-from (select client_code, impression_id, level1_id, start_date, maxMerge(dentsu_ots) as dentsu_ots, maxMerge(total_dwell_time) as total_dwell_time, maxMerge(half_in_view_time) as half_in_view_time, maxMerge(clicked) as clicked, maxMerge(interaction) as interaction, maxMerge(was_ever_fully_in_view) as was_ever_fully_in_view, maxMerge(ivt) as ivt
+AS select client_code, sum(impressions) as impressions, level1_id, start_date, sum(dentsu_ots) as dentsu_ots, avg(total_dwell_time) as total_dwell_time, avg(half_in_view_time) as half_in_view_time, sum(clicked) as clicked, sum(interaction) as interaction, sum(was_ever_fully_in_view) as was_ever_fully_in_view, sum(ivt) as ivt
+from (select uniq(1) as impressions, client_code, impression_id, level1_id, start_date, maxMerge(dentsu_ots) as dentsu_ots, maxMerge(total_dwell_time) as total_dwell_time, maxMerge(half_in_view_time) as half_in_view_time, maxMerge(clicked) as clicked, maxMerge(interaction) as interaction, maxMerge(was_ever_fully_in_view) as was_ever_fully_in_view, maxMerge(ivt) as ivt
 from `default`.impressions
 group by client_code, level1_id, start_date, impression_id)
 group by client_code, level1_id, start_date;
