@@ -34,6 +34,7 @@ describe('loading express', () => {
       .expect(200, [
         {
           start_date: '2019-09-28',
+          impressions: 1,
           dentsu_ots: 0,
           total_dwell_time: 1,
           half_in_view_time: 1,
@@ -44,6 +45,7 @@ describe('loading express', () => {
         },
         {
           start_date: '2019-09-30',
+          impressions: 1,
           dentsu_ots: 0,
           total_dwell_time: 2,
           half_in_view_time: 2,
