@@ -6,6 +6,7 @@ import Users from './Users';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import createHistory from 'history/createBrowserHistory'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 // Create a history of your choosing (we're using a browser history in this case)
