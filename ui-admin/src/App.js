@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Router, Route, Switch, Link } from 'react-router-dom';
 import Login from './Login';
 import EditUser from './EditUser';
+import AddUser from './AddUser';
 import Users from './Users';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
@@ -37,12 +38,14 @@ class App extends Component {
             <li><Link to="/users">Users</Link></li>
             <li><Link to="/dashboard/1">User Dashboard</Link></li>
             <li><Link to="/users/1">Edit User</Link></li>
+            <li><Link to="/add-user">Add User</Link></li>
           </ul>
           <Switch>
             <Route exact path='/' component={Login} />
             <Route exact path='/reset-password' component={ResetPassword} />
             <Route exact path='/users' component={Users} />
             <Route exact path='/dashboard/:id' component={Dashboard} />
+            <Route exact path='/add-user' component={AddUser} />
             <Route exact path='/users/:id' component={EditUser} />
           </Switch>
         </Router>
