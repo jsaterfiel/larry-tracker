@@ -4,6 +4,7 @@
   "description": "## Dev Commands Starting everything from project root directory",
   "main": "index.js",
   "dependencies": {
+    "bootstrap": "^4.3.1",
     "eslint": "^6.4.0",
     "eslint-plugin-flowtype": "^4.3.0",
     "eslint-plugin-import": "^2.18.2",
