@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 
 class EditUser extends Component {
-  componentWillUpdate(nextProps) {
-  }
 
   render() {
+    let id = this.props.match.params.id;
     return (
       <div className="EditUserPage">
-        EditUser page
+        EditUser page for {id}
       </div>
     );
   }

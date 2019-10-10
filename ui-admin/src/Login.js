@@ -13,9 +13,7 @@ class Login extends Component {
 
     this.state = { showAlert: false };
   }
-  componentWillUpdate(nextProps) {
-  }
-
+  
   doLogin() {
     this.setState({
       showAlert: true

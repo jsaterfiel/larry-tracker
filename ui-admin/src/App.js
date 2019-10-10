@@ -6,16 +6,16 @@ import AddUser from './AddUser';
 import Users from './Users';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
-import createHistory from 'history/createBrowserHistory'
+import { createBrowserHistory } from 'history'
 import './App.css';
 
 
 // Create a history of your choosing (we're using a browser history in this case)
-const history = createHistory()
+const history = createBrowserHistory()
 
 class App extends Component {
   previousLocation = this.props.location;
-  componentWillUpdate(nextProps) {
+  UNSAFE_componentWillUpdate(nextProps) {
     let { location } = this.props;
 
     // set previousLocation if props.location is not modal

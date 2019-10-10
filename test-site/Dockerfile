@@ -6,10 +6,11 @@ WORKDIR /usr/src/app
 # Install app dependencies
 # where available (npm@5+)
 COPY package.json ./
-COPY yarn.lock ./
+COPY package-lock.json ./
+
 COPY site ./
 
-RUN yarn
+RUN [ "npm", "install" ]
 
 EXPOSE 8282
 

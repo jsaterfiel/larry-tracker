@@ -21,11 +21,11 @@ before_install:
   - cat db/scripts/sample1.sql | docker run -i --rm --network larry-tracker_default --link larry-tracker_ch-server-1_1:ch-server-1 yandex/clickhouse-client -m --host ch-server-1 --database default --multiquery
 
 script:
-  - yarn
+  - npm install
   - cd api
-  - yarn
+  - npm install
   - cd ..
   - ./node_modules/mocha/bin/mocha --recursive "./api/src/*.test.js" --exit
   - cd ui-admin
-  - yarn
-  - yarn test
+  - npm install
+  - npm run test
