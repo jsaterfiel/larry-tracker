@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Form, Button, Alert } from 'react-bootstrap';
+//import { Form, Button, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 class Users extends Component {
@@ -28,17 +29,6 @@ class Users extends Component {
 
   render() {
     console.log(this.state)
-    const style = {
-      padding: '10px',
-      border: '1px solid green',
-      display: 'block',
-      marginLeft: 'auto',
-      marginRight: 'auto',
-      width: '50%',
-      color: '#4db1e8',
-      textAlign: 'center',
-      fontFamily: 'sans-serif'
-  }
   const tech = {
       background: '#4db1e8',
       color: '#fff',
@@ -48,7 +38,7 @@ class Users extends Component {
     return (
       <div className="UsersPage">
         Users page
-        <img src={this.props.img_url} height="250px"/>
+        <img src={this.props.img_url} alt='Testing any images' height="250px"/>
               <h1>{this.props.title}</h1>
               {this.state.show_technologies ?
                   <p>

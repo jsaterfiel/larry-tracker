@@ -11,6 +11,7 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-react": "^7.14.3",
     "eslint-plugin-react-hooks": "^2.1.1",
+    "jquery": "^3.4.1",
     "mocha": "^6.2.1",
     "nyc": "^14.1.1"
   },
