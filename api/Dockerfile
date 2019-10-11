@@ -18,4 +18,4 @@ COPY  . .
 
 EXPOSE 8181
 
-CMD [ "yarn", "start" ]
+CMD [ "npm", "run", "start" ]
