@@ -40,14 +40,16 @@ class App extends Component {
             <li><Link to="/users/1">Edit User</Link></li>
             <li><Link to="/add-user">Add User</Link></li>
           </ul>
-          <Switch>
-            <Route exact path='/' component={Login} />
-            <Route exact path='/reset-password' component={ResetPassword} />
-            <Route exact path='/users' component={Users} />
-            <Route exact path='/dashboard/:id' component={Dashboard} />
-            <Route exact path='/add-user' component={AddUser} />
-            <Route exact path='/users/:id' component={EditUser} />
-          </Switch>
+          <div className="container">
+            <Switch>
+              <Route exact path='/' component={Login} />
+              <Route exact path='/reset-password' component={ResetPassword} />
+              <Route exact path='/users' component={Users} />
+              <Route exact path='/dashboard/:id' component={Dashboard} />
+              <Route exact path='/add-user' component={AddUser} />
+              <Route exact path='/users/:id' component={EditUser} />
+            </Switch>
+          </div>
         </Router>
       </div>
     );
