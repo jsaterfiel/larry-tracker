@@ -1,5 +1,6 @@
 drop table if exists `default`.byClientLevels;
 drop table if exists `default`.impressions;
+drop table if exists `default`.users;
 
 CREATE TABLE `default`.impressions (
 	client_code String,
@@ -32,3 +33,22 @@ from (select uniq(1) as impressions, client_code, impression_id, level1_id, star
 from `default`.impressions
 group by client_code, level1_id, start_date, impression_id)
 group by client_code, level1_id, start_date;
+
+CREATE TABLE `default`.users (
+	uname String,
+	pword String,
+	client_code String,
+	utype Enum('user' = 1, 'admin' = 2),
+	company String,
+	name String,
+	securityQuestion Enum('What is your favorite color?' = 1, 'What is your favorite movie?' = 2, 'Who is your favorite teacher?' = 3),
+	securityAnswer String,
+	sessionID String,
+	signup_hash String,
+	tstamp DateTime,
+	active UInt8
+) ENGINE = MergeTree()
+PARTITION BY (
+	uname, sessionID
+)
+ORDER BY (uname, sessionID, tstamp);

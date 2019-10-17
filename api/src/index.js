@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const collection = require('./collection');
 const byLevel = require('./byLevel');
 const lookup = require('./lookup');
+const users = require('./auth');
 const app = express();
 const expressSwagger = require('express-swagger-generator')(app);
 
