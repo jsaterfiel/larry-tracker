@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const collection = require('./collection');
 const byLevel = require('./byLevel');
 const lookup = require('./lookup');
+const auth = require('./auth');
+const ping = require('./ping');
+const util = require('./util');
 const app = express();
 const expressSwagger = require('express-swagger-generator')(app);
 
@@ -25,8 +28,8 @@ let options = {
       ApiKey: {
         type: 'apiKey',
         in: 'header',
-        name: 'X-API-KEY',
-        description: 'API Key',
+        name: 'x-session-id',
+        description: 'Session Hash',
       }
     }
   },
@@ -50,25 +53,24 @@ app.get('/', (req, res) => res.send('<html><head><title>Larry Tracker API</title
  * @property {boolean} pong
  */
 /**
- * Ping self test for system functionality example: http://localhost:8181/api/ping
+ * Ping self test for system functionality
  * @route GET /ping
  * @produces application/json
  * @consumes application/json
  * @returns {ResponsePing} 200 - Pong
+ * @group Maintenance
  */
-app.get('/api/ping', async (req, res) => {
-  res.send({
-    'pong': true
-  });
+app.get('/api/ping', async (_req, res) => {
+  try {
+    const output = await ping.getPing();
+    res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
 });
 
 /**
  * Collection (ingestion)
- * @example http://localhost:8181/api/collection?pcode=client1&level1=1112&hw=1569685960721&ord=33346862409425390&ba=0&gs=1&ef=1&fa=0&rt=0&ac=1000&ct=0
- * @see collection.process
- */
-/**
- * Collection (ingestion) example: http://localhost:8181/api/collection?pcode=client1&level1=1112&hw=1569685960721&ord=33346862409425390&ba=0&gs=1&ef=1&fa=0&rt=0&ac=1000&ct=0
  * @route GET /collection
  * @param {string} pcode.query.required example: client1
  * @param {string} level1.query.required example: 1112
@@ -84,6 +86,7 @@ app.get('/api/ping', async (req, res) => {
  * @produces application/json
  * @consumes application/json
  * @returns 200 - each row is a date ordered date ascending
+ * @group Collection
  */
 app.get('/api/collection', async (req, res) => {
   try {
@@ -108,19 +111,26 @@ app.get('/api/collection', async (req, res) => {
  * @property {number} ivtCount
  */
 /**
- * By Level Reporting example: http://localhost:8181/api/by-level?pcode=client_1&level1=1111&startDate=2019-09-27&endDate=2019-09-30
+ * By Level Reporting
+ * ClientCode is required if you're an admin else it's ignored and retrieved from your user record.
  * @route GET /by-level
- * @param {string} pcode.query.required example: client_1
+ * @param {string} clientCode.query example: client_1
  * @param {string} startDate.query.required example: 2019-09-27
  * @param {string} endDate.query.required example: 2019-09-30
  * @produces application/json
  * @consumes application/json
  * @returns {Array.<ResponseByLevel>} 200 - each row is a date ordered date ascending
  * @security ApiKey
+ * @group Reporting
  */
 app.get('/api/by-level', async (req, res) => {
   try {
-    const output = await byLevel.process(req.query.startDate, req.query.endDate, req.query.pcode, req.query.level1);
+    const user = await util.getUserFromRequest(req);
+    let clientCode = user.clientCode;
+    if (user.userType == 'admin') {
+      clientCode = req.query.clientCode;
+    }
+    const output = await byLevel.process(req.query.startDate, req.query.endDate, clientCode, req.query.level1);
     res.send(output);
   } catch (err) {
     res.status(500).send( {error: err.message} );
@@ -132,15 +142,21 @@ app.get('/api/by-level', async (req, res) => {
  * @property {string} clientCode
  */
 /**
- * This function comment is parsed by doctrine returns the list of clients orderd by name ascending example: http://localhost:8181/api/clients
+ * This function comment is parsed by doctrine returns the list of clients orderd by name ascending
+ * Admin Only Route
  * @route GET /clients
  * @produces application/json
  * @consumes application/json
  * @returns {Array.<ResponseClient>} 200 - array of client codes
  * @security ApiKey
+ * @group Lookup
  */
 app.get('/api/clients', async (req, res) => {
   try {
+    const user = await util.getUserFromRequest(req);
+    if (user.userType != 'admin') {
+      throw Error('Unauthorized');
+    }
     const output = await lookup.getClients();
     res.send(output);
   } catch (err) {
@@ -153,24 +169,107 @@ app.get('/api/clients', async (req, res) => {
  * @property {string} level1ID
  */
 /**
- * Returns the list of clients orderd by name ascending example: http://localhost:8181/api/client-levels?pcode=client_1
+ * Returns the list of clients orderd by name ascending
+ * clientCode query string required if not a user.  If a user it is ignored
  * @route GET /client-levels
- * @param {string} pcode.query.required Example: client_1
+ * @param {string} clientCode.query Example: client_1
  * @produces application/json
  * @consumes application/json
  * @returns {Array.<ResponseClientLevel>} 200 - levels for client
  * @security ApiKey
+ * @group Lookup
  */
 app.get('/api/client-levels', async (req, res) => {
   try {
-    const output = await lookup.getLevels(req.query.pcode);
+    const user = await util.getUserFromRequest(req);
+    let clientCode = user.clientCode;
+    if (user.userType == 'admin') {
+      clientCode = req.query.clientCode;
+    }
+    const output = await lookup.getLevels(clientCode);
     res.send(output);
   } catch (err) {
     res.status(500).send( {error: err.message} );
   }
 });
 
-app.listen(port, () => console.log(`Larry Tracker API listening on port ${port}!`));
+/**
+ * @typedef LoginRequest
+ * @property {string} username.required larry
+ * @property {string} password.required 
+ */
+/**
+ * Returns the list of clients orderd by name ascending
+ * Admin Test Data:
+ * u: larry
+ * p: P@ssw0rd
+ * 
+ * User Test Data:
+ * u: monsters
+ * p: P@ssw0rd
+ * @route POST /login
+ * @param {LoginRequest.model} login.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @returns {Array.<ResponseClientLevel>} 200 - levels for client
+ * @group Auth
+ */
+app.post('/api/login', async (req, res) => {
+  try {
+    const output = await auth.login(req.body.username, req.body.password);
+    res.setHeader('x-session-id', output.sessionID);
+    delete output.sessionID;
+    res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * Logout
+ * @route GET /logout
+ * @produces application/json
+ * @consumes application/json
+ * @returns 200
+ * @security ApiKey
+ * @group Auth
+ */
+app.get('/api/logout', async (req, res) => {
+  try {
+    const user = await util.getUserFromRequest(req);
+    await auth.logout(user);
+    res.send('');
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+/**
+ * @typedef ResetPasswordReqeust
+ * @property {string} username.required
+ * @property {string} securityQuestion.required What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @property {string} securityAnswer.required
+ * @property {string} newPassword.required
+ */
+/**
+ * Reset Password
+ * What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @route POST /resetPassword
+ * @param {ResetPasswordReqeust.model} resetPW.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @returns 200
+ * @group Auth
+ */
+app.post('/api/resetPassword', async (req, res) => {
+  try {
+    await auth.resetPassword(req.body.username, req.body.securityQuestion, req.body.securityAnswer, req.body.newPassword);
+    res.send('');
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+app.listen(port, () => console.log(`Larry Tracker API listening on port ${port} http://localhost:${port} !`));
 
 // This is for unit tests to work
 module.exports = app;
