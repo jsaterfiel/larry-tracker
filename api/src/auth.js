@@ -1,10 +1,6 @@
-const db = require('./db');
 const bcrypt = require('bcrypt');
 const util = require('./util');
 const saltRounds = 10;
-
-// detect single quotes
-const DB_ESC_REG = /['\\]/g;
 
 /**
  * Auth
@@ -22,12 +18,16 @@ const api = {
     if ( !password ) throw Error('password is required');
 
     // get user by username
-    const user = await util.getUserData(username);
-
-    if (!user) throw Error('Invalid credentials');
+    let user;
+    try {
+      user = await util.getUserData(username, '');
+    } catch (err) {
+      console.error(err);
+      throw Error('Internal Error');
+    }
 
     //validate the password
-    const isValid = await bcrypt.compare(password, user.pword);
+    const isValid = await bcrypt.compare(password, user.password);
 
     if (!isValid) {
       throw Error('Invalid credentials');
@@ -35,31 +35,32 @@ const api = {
 
     //set sessionID, update user data and return user data for display purposes
     const sessionID = Math.floor(Math.random()*1000000000000000000000).toString();
-    await util.updateUserData({
-      username: user.username,
-      sessionID: sessionID
-    });
+    try {
+      await util.updateUserData({
+        username: user.username,
+        sessionID: sessionID
+      });
+    } catch (err) {
+      console.error(err);
+      throw Error('Internal Error');
+    }
 
     return {
       sessionID: sessionID,
+      username: user.username,
       name: user.name,
       company: user.company,
-      userType: user.utype
+      userType: user.userType
     };
   },
 
   /**
    * Auth.logout Logout of session
-   * @param {String} sessionID
+   * @param {Object} user
    */
-  logout: async (sessionID) => {
+  logout: async (user) => {
     //validate inputs
-    if ( !sessionID ) throw Error('sessionID is required');
-
-    // get user by username
-    const user = await util.getUserData('', sessionID);
-
-    if (!user) return;
+    if ( !user ) throw Error('user data is required');
 
     //set sessionID, update user data and return user data for display purposes
     user.sessionID = '';
@@ -68,7 +69,7 @@ const api = {
 
   /**
    * Auth.updateUser Logout of session
-   * @param {String} sessionID
+   * @param {String} sessionID required
    * @param {String} email
    * @param {String} name
    * @param {String} securityQuestion
@@ -82,18 +83,16 @@ const api = {
       sessionID: sessionID
     };
 
+    // add optional data if it exists
     if (email) {
       data.email = email;
     }
-
     if (name) {
       data.name = name;
     }
-
     if (securityQuestion) {
       data.securityQuestion = securityQuestion;
     }
-
     if (securityQuestionAnswer) {
       data.securityQuestionAnswer = securityQuestionAnswer;
     }
@@ -121,11 +120,11 @@ const api = {
     if ( newPassword.length < 8 ) throw Error('password must be at least 8 characters long');
 
     // get user by username
-    const user = await util.getUserData(username);
+    const user = await util.getUserData(username, '');
     if (!user) throw Error('Incorrect values provided');
 
     // check the security question and answers match
-    if (user.securityQuestion != securityQuestion || user.securityQuestionAnswer != securityQuestionAnswer) {
+    if (user.securityQuestion != securityQuestion || user.securityAnswer != securityQuestionAnswer) {
       throw Error('Incorrect values provided');
     }
 
@@ -135,7 +134,8 @@ const api = {
     // change the user's password
     await util.updateUserData({
       username: username,
-      pword: pword
+      password: pword,
+      sessionID: '' //reset session as well as a security precaution
     });
   },
 
@@ -147,7 +147,7 @@ const api = {
    */
   isAdmin: async (req, _resp, next) => {
     const user = await util.getUserData('', req.header('x-session-id'));
-    if (user.utype == 'admin') return next();
+    if (user.userType == 'admin') return next();
   }
 };
 

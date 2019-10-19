@@ -52,3 +52,22 @@ PARTITION BY (
 	uname, sessionID
 )
 ORDER BY (uname, sessionID, tstamp);
+
+CREATE TABLE `default`.users (
+	username String,
+	password String,
+	clientCode String,
+	userType Enum('user' = 1, 'admin' = 2),
+	company String,
+	name String,
+	securityQuestion Enum('What is your favorite color?' = 1, 'What is your favorite movie?' = 2, 'Who is your favorite teacher?' = 3),
+	securityAnswer String,
+	sessionID String,
+	signupHash String,
+	tstamp DateTime,
+	active UInt8
+) ENGINE = MergeTree()
+PARTITION BY (
+	username, sessionID
+)
+ORDER BY (username, sessionID, tstamp);

@@ -10,7 +10,7 @@ const DB_ESC_REG = /['\\]/g;
 const api = {
 
   getClients: async () => {
-    const query = 'select client_code as "clientCode" from `default`.byClientLevels group by client_code order by client_code asc;';
+    const query = 'select clientCode from (select username, clientCode, max(tstamp) as tstamp from `default`.users where active = 1 group by username, clientCode) where clientCode != \'\' group by clientCode order by clientCode asc';
 
     return await db.query(query).toPromise();
   },
@@ -19,7 +19,7 @@ const api = {
     if (client && typeof client == 'string') {
       client = client.replace(DB_ESC_REG, '');
     } else {
-      throw new Error('pcode required');
+      throw new Error('clientCode required');
     }
 
     const query = `SELECT level1_id as "level1ID"

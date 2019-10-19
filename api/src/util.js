@@ -3,7 +3,7 @@ const db = require('./db');
 // detect single quotes
 const DB_ESC_REG = /['\\]/g;
 
-module.exports = {
+const util = {
   /**
    * returns active user data
    * You can pass either username or sessionID but not both.  Use '' for the value you don't want to use.
@@ -12,51 +12,45 @@ module.exports = {
    */
   getUserData: async (username, sessionID) => {
     //validate inputs
-    if (!username && !sessionID) return false;
+    if (typeof username != 'string' || typeof sessionID != 'string') throw Error('username and password must be strings');
 
     const uname = username.replace(DB_ESC_REG, '');
     const sID = sessionID.replace(DB_ESC_REG, '');
 
-    let whereClause = `select p.uname, max(tstamp) as max_tstamp
+    let whereClause = `select p.username as username, max(tstamp) as max_tstamp
     from (
-    select uname, max(tstamp) as tstamp, sessionID
+    select username, max(tstamp) as tstamp, sessionID
     from \`default\`.users
     where sessionID = '${sID}'
-    group by uname, sessionID) c
-    left join (select uname, max(tstamp) as tstamp from \`default\`.users group by uname) p on p.uname = c.uname and p.tstamp = c.tstamp
-    group by p.uname`;
+    group by username, sessionID) c
+    left join (select username, max(tstamp) as tstamp from \`default\`.users group by username) p on p.username = c.username and p.tstamp = c.tstamp
+    group by p.username`;
 
-    if (sessionID) {
-      whereClause = `select uname, max(tstamp) as max_tstamp from \`default\`.users where uname = '${uname}' group by uname`;
+    if (username) {
+      whereClause = `select username, max(tstamp) as max_tstamp from \`default\`.users where username = '${uname}' group by username`;
     }
     // get user by username
-    const query = `Select uname, pword, client_code, utype, company, name, securityQuestion, securityAnswer, sessionID, signup_hash, active
+    const query = `select u.username as username, u.password as password, u.clientCode as clientCode, u.userType as userType, u.company as company,
+    u.name as name, u.securityQuestion as securityQuestion, u.securityAnswer as securityAnswer, u.sessionID as sessionID, u.signupHash as signupHash, u.active as active
     from (${whereClause}) b
-    left join \`default\`.users u on b.uname = u.uname and b.max_tstamp = u.tstamp
+    left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp
     where u.active = 1`.replace(/\n/g,' ');
 
-    console.log(query);
-
     let rows = await db.query(query).toPromise();
-
     if (rows.length === 1) return rows[0];
     return false;
   },
 
   /**
-   * updates user data
+   * updates/creates user data
    * Returns true on success false on failure
    */
   updateUserData: async (data) => {
-    if (!data) return false;
+    if (!data || !data.username) throw Error('data is required and it must have a username');
 
-    // get user by username or sessionID
-    let user;
-    if (data.username) {
-      user = await this.getUserData(data.username);
-    } else {
-      user = await this.getUserData(data.sessionID);
-    }
+    // get user by username or sessionIDx
+    const user = await util.getUserData(data.username, '');
+
     if (!user) return false;
 
     // santitize input data
@@ -65,15 +59,39 @@ module.exports = {
         data[key] = data[key].replace(DB_ESC_REG, '');
       }
     }
-    const newUser = Object.apply(user, data);
+
+    //copy new properties over the user
+    Object.assign(user, data);
 
     //updates the user.  some fields are not meant to be updated ever like, username, utype
+    user.tstamp = new Date();
     const query = `INSERT INTO \`default\`.users
-    (uname, pword, client_code, utype, company, name, securityQuestion, securityAnswer, sessionID, signup_hash, active, tstamp)
-    VALUES('${data.username}', '${newUser.pword}', '${newUser.client_code}', '${data.utype}', '${newUser.company}', '${newUser.name}', '${newUser.securityQuestion}', '${newUser.securityQuestionAnswer}', '${newUser.sessionID}', '${newUser.signup_hash}', ${newUser.active}, now())`.replace(/\n/g,' ');
+    (username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+    `.replace(/\n/g,' ');
 
-    await db.insert(query).toPromise();
+    await db.insert(query, user).toPromise();
 
     return true;
+  },
+
+  /**
+   * Retrieves a user by their session data
+   */
+  getUserFromRequest: async (req) => {
+    const sessionID = req.header('x-session-id');
+
+    if (!sessionID) throw Error('missing x-session-id header');
+
+    let user;
+    try {
+      user = await util.getUserData('', sessionID);
+    } catch (err) {
+      console.log(err);
+    }
+
+    if (!user) throw Error('Session Error.  Try logging in again.');
+
+    return user;
   }
 };
+module.exports = util;
