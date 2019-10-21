@@ -37,7 +37,7 @@ class Dashboard extends Component {
     render() {
         return (
             <div className="DashboardPage">
-                <h1 className="main-title">Acme Inc. Revenue Analysis for 2015</h1>
+                <h1 className="main-title">Acme Inc. Revenue Analysis</h1>
                 <Container>
                     <Selection
                         yearFrom={this.state.yearFrom}
