@@ -6,6 +6,7 @@
     "start": "node src/index.js"
   },
   "dependencies": {
+    "bcrypt": "^3.0.6",
     "body-parser": "^1.18.2",
     "clickhouse": "^1.2.21",
     "cookie-parser": "^1.4.4",

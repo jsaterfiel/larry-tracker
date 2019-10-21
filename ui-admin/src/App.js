@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, Switch, Link } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
 import Login from './Login';
 import EditUser from './EditUser';
 import AddUser from './AddUser';
@@ -7,7 +8,6 @@ import Users from './Users';
 import Dashboard from './Dashboard';
 import ResetPassword from './ResetPassword';
 import { createBrowserHistory } from 'history'
-import './App.css';
 
 
 // Create a history of your choosing (we're using a browser history in this case)
@@ -32,22 +32,48 @@ class App extends Component {
     return (
       <div className="App">
         <Router history={history}>
-          <ul className="menu">
-            <li><Link to="/">Login</Link></li>
-            <li><Link to="/reset-password">Reset Password</Link></li>
-            <li><Link to="/users">Users</Link></li>
-            <li><Link to="/dashboard/1">User Dashboard</Link></li>
-            <li><Link to="/users/1">Edit User</Link></li>
-            <li><Link to="/add-user">Add User</Link></li>
-          </ul>
-          <Switch>
-            <Route exact path='/' component={Login} />
-            <Route exact path='/reset-password' component={ResetPassword} />
-            <Route exact path='/users' component={Users} />
-            <Route exact path='/dashboard/:id' component={Dashboard} />
-            <Route exact path='/add-user' component={AddUser} />
-            <Route exact path='/users/:id' component={EditUser} />
-          </Switch>
+          <Nav>
+            <Nav.Item>
+              <Link to="/" className="nav-link">
+                Home
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/reset-password" className="nav-link">
+                Reset Password
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/users" className="nav-link">
+                Users
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/dashboard/1" className="nav-link">
+                User Dashboard
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/users/1" className="nav-link">
+                Edit User
+              </Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Link to="/add-user" className="nav-link">
+                Add User
+              </Link>
+            </Nav.Item>
+          </Nav>
+          <div className="container">
+            <Switch>
+              <Route exact path='/' component={Login} />
+              <Route exact path='/reset-password' component={ResetPassword} />
+              <Route exact path='/users' component={Users} />
+              <Route exact path='/dashboard/:id' component={Dashboard} />
+              <Route exact path='/add-user' component={AddUser} />
+              <Route exact path='/users/:id' component={EditUser} />
+            </Switch>
+          </div>
         </Router>
       </div>
     );
