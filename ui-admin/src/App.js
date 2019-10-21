@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Router, Route, Switch, Link } from 'react-router-dom';
+
 import Login from './views/Login';
 import EditUser from './views/EditUser';
 import AddUser from './views/AddUser';
@@ -7,8 +8,9 @@ import Users from './views/Users';
 import Dashboard from './views/Dashboard';
 import ResetPassword from './views/ResetPassword';
 import { createBrowserHistory } from 'history'
-import './App.css';
 import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
+
+
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory()

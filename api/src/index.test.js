@@ -30,7 +30,8 @@ describe('loading express', () => {
   });
   it('byLevel basic', done => {
     request(server)
-      .get('/api/by-level?pcode=client_1&level1=1111&startDate=2019-09-28&endDate=2019-09-30')
+      .get('/api/by-level?clientCode=client_1&level1=1111&startDate=2019-09-28&endDate=2019-09-30')
+      .set('x-session-id', '1323268850077976000000')
       .expect(200, [
         {
           startDate: '2019-09-28',
@@ -59,6 +60,7 @@ describe('loading express', () => {
   it('lookup getClients basic', done => {
     request(server)
       .get('/api/clients')
+      .set('x-session-id', '1323268850077976000000')
       .expect(resp => {
         // need to limit the results to client_1 as there could be several clients since the data is live
         for (let item of resp.body) {
@@ -74,7 +76,8 @@ describe('loading express', () => {
   });
   it('lookup getLevels basic', done => {
     request(server)
-      .get('/api/client-levels?pcode=client_1')
+      .get('/api/client-levels?clientCode=client_1')
+      .set('x-session-id', '1323268850077976000000')
       .expect(resp => {
         // need to limit the results to client_1 as there could be several clients since the data is live
         for (let item of resp.body) {
@@ -87,5 +90,38 @@ describe('loading express', () => {
       .expect(200, {
         level1ID: '1111'
       }, done);
+  });
+  it('login', done => {
+    request(server)
+      .post('/api/login')
+      .send({
+        username: 'testUserLogin',
+        password: 'P@ssw0rd'
+      })
+      .expect('x-session-id', /.?/)
+      .expect(200, {
+        username: 'testUserLogin',
+        name: 'Test User Login',
+        company: 'Larry Tracker',
+        userType: 'user'
+      }, done);
+  });
+  it('logout', done => {
+    // can only do negative test automated as this testing tool isn't able to run multiple requests in the same test
+    request(server)
+      .get('/api/logout')
+      .set('x-session-id', /.?/)
+      .expect(500, { error: 'Session Error.  Try logging in again.' }, done);
+  });
+  it('reset password', done => {
+    request(server)
+      .post('/api/resetPassword')
+      .send({
+        username: 'testUserLogin',
+        securityQuestion: 'What is your favorite color?',
+        securityAnswer: 'Rainbow',
+        newPassword: 'P@ssw0rd'
+      })
+      .expect(200, done);
   });
 });
