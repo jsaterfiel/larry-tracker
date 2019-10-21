@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import ResetPassword from './ResetPassword';
+import ResetPassword from '../views/ResetPassword';
 
 
 it('renders without crashing', () => {

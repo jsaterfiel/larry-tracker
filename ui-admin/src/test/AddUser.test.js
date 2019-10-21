@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import AddUser from '../views/AddUser';
+
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
+  ReactDOM.render(<AddUser />, div);
   ReactDOM.unmountComponentAtNode(div);
 });

@@ -1,17 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import EditUser from './EditUser';
+import Users from '../views/Users';
 
 
 it('renders without crashing', () => {
   const div = document.createElement('div');
-  const componentProps = {
-    match: {
-      params: {
-        id: "1"
-      }
-    }
-  }
-  ReactDOM.render(<EditUser {...componentProps} />, div);
+  ReactDOM.render(<Users />, div);
   ReactDOM.unmountComponentAtNode(div);
 });
