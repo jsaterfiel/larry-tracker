@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
-import logoPic from './larry.png';
+import logoPic from '../larry.png';
 
 class Login extends Component {
   constructor(props) {

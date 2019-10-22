@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { Router, Route, Switch, Link } from 'react-router-dom';
-import { Nav } from 'react-bootstrap';
-import Login from './Login';
-import EditUser from './EditUser';
-import AddUser from './AddUser';
-import Users from './Users';
-import Dashboard from './Dashboard';
-import ResetPassword from './ResetPassword';
+
+import Login from './views/Login';
+import EditUser from './views/EditUser';
+import AddUser from './views/AddUser';
+import Users from './views/Users';
+import Dashboard from './views/Dashboard';
+import ResetPassword from './views/ResetPassword';
 import { createBrowserHistory } from 'history'
+import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
+
 
 
 // Create a history of your choosing (we're using a browser history in this case)
@@ -20,8 +22,8 @@ class App extends Component {
 
     // set previousLocation if props.location is not modal
     if (
-      nextProps.history.action !== "POP" &&
-      (!location.state || !location.state.modal)
+        nextProps.history.action !== "POP" &&
+        (!location.state || !location.state.modal)
     ) {
       this.previousLocation = this.props.location;
     }
@@ -30,52 +32,41 @@ class App extends Component {
   render() {
 
     return (
-      <div className="App">
-        <Router history={history}>
-          <Nav>
-            <Nav.Item>
-              <Link to="/" className="nav-link">
-                Home
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/reset-password" className="nav-link">
-                Reset Password
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/users" className="nav-link">
-                Users
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/dashboard/1" className="nav-link">
-                User Dashboard
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/users/1" className="nav-link">
-                Edit User
-              </Link>
-            </Nav.Item>
-            <Nav.Item>
-              <Link to="/add-user" className="nav-link">
-                Add User
-              </Link>
-            </Nav.Item>
-          </Nav>
-          <div className="container">
-            <Switch>
-              <Route exact path='/' component={Login} />
-              <Route exact path='/reset-password' component={ResetPassword} />
-              <Route exact path='/users' component={Users} />
-              <Route exact path='/dashboard/:id' component={Dashboard} />
-              <Route exact path='/add-user' component={AddUser} />
-              <Route exact path='/users/:id' component={EditUser} />
-            </Switch>
-          </div>
-        </Router>
-      </div>
+        <div className="App">
+          <Router history={history}>
+            <div className="container">
+              <Navbar bg="light" expand="lg">
+                <Navbar.Brand href="/dashboard/:id">Larry-Tracker</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                  <Nav className="mr-auto">
+                    <Nav.Link as={Link} to="/">Login</Nav.Link>
+                    <Nav.Link as={Link} to="/reset-password'">ResetPassword</Nav.Link>
+                    <Nav.Link as={Link} to="/users">Users</Nav.Link>
+                    <Nav.Link as={Link} to="/dashboard/:id">User Dashboard</Nav.Link>
+                    <Nav.Link as={Link} to="/add-user">Edit User</Nav.Link>
+                    <Nav.Link as={Link} to="/users/:id">Add User</Nav.Link>
+                    <NavDropdown title="Profile" id="basic-nav-dropdown">
+                      <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.2">Setting</NavDropdown.Item>
+                      <NavDropdown.Item href="#action/3.3">Support</NavDropdown.Item>
+                      <NavDropdown.Divider />
+                      <NavDropdown.Item href="#action/3.4">Logout</NavDropdown.Item>
+                    </NavDropdown>
+                  </Nav>
+                </Navbar.Collapse>
+              </Navbar>
+              <Switch>
+                <Route exact path='/' component={Login} />
+                <Route exact path='/reset-password' component={ResetPassword} />
+                <Route exact path='/users' component={Users} />
+                <Route exact path='/dashboard/:id' component={Dashboard} />
+                <Route exact path='/add-user' component={AddUser} />
+                <Route exact path='/users/:id' component={EditUser} />
+              </Switch>
+            </div>
+          </Router>
+        </div>
     );
   }
 }
