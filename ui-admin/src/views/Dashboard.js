@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Button, Container, Row, Col,Table } from 'react-bootstrap';
-import BarChart from "../components/charts/BarChart";
 import JointScatterChart from "../components/charts/JointScatterChart";
 import ScatterChart from "../components/charts/ScatterChart";
-import PieChartTwoLevel from "../components/charts/PieChartTwoLevel";
 import { ResponsiveContainer } from "recharts"
 import Selection from "../components/Selection";
 

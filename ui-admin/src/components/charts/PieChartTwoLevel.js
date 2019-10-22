@@ -2,8 +2,6 @@ import React, { Component } from "react";
 
 import { PieChart, Pie, Tooltip, Sector } from "recharts";
 
-const dataMain = [{ name: "Droobi", value: 100 }];
-
 const data01 = [
     { name: "Group A", value: 400 },
     { name: "Group B", value: 300 },
@@ -119,7 +117,6 @@ export default class PieChartTwoLevel extends Component {
         }
         const { payload } = event;
         const groupName = payload.name;
-        const { list2 } = this.state;
         const newList = data02.filter(item => {
             const firstLetter = item.name.substr(0, 1);
             if (firstLetter === groupName.substr(groupName.length - 1)) {

@@ -9,7 +9,6 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
-    Scatter
 } from "recharts";
 
 const data = [
