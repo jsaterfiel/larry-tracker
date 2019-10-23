@@ -124,4 +124,116 @@ describe('loading express', () => {
       })
       .expect(200, done);
   });
+  it('get users', done => {
+    request(server)
+      .get('/api/getUsers')
+      .set('x-session-id', '1323268850077976000000')
+      .expect(resp => {
+        // throw Error(JSON.stringify(resp));
+        // need to limit the results to client_1 as there could be several clients since the data is live
+        for (let item of resp.body) {
+          if (item.username == 'testAdmin') {
+            resp.body = item;
+            break;
+          }
+        }
+      })
+      .expect(200, {
+        active: 1,
+        clientCode: '',
+        company: 'Larry Tracker',
+        email: 'testAdmin@tracker.com',
+        name: 'Test Admin',
+        userType: 'admin',
+        username: 'testAdmin'
+      }, done);
+  });
+  it('get users - not authorized', done => {
+    request(server)
+      .get('/api/getUsers')
+      .set('x-session-id', '32132328850077976000000')
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('get user', done => {
+    request(server)
+      .get('/api/getUser?username=monsters')
+      .set('x-session-id', '1323268850077976000000')
+      .expect(200, {
+        username: 'monsters',
+        email: 'mikey@monsters.inc',
+        clientCode: 'client_1',
+        userType: 'user',
+        company: 'Monsters Inc.',
+        name: 'Mikey',
+        active: 1
+      }, done);
+  });
+  it('get user - not authorized', done => {
+    request(server)
+      .get('/api/getUser?username=testUser')
+      .set('x-session-id', '32132328850077976000000')
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('update user', done => {
+    request(server)
+      .post('/api/updateUser')
+      .set('x-session-id', '1323268850077976000000')
+      .send({
+        username: 'testUserUpdate',
+        name: 'Bob',
+        email: 'bob@bob.com'
+      })
+      .expect(200, done);
+  });
+  it('update user - not authorized', done => {
+    request(server)
+      .post('/api/updateUser')
+      .set('x-session-id', '32132328850077976000000')
+      .send({
+        username: 'testUserUpdate',
+        name: 'Bob',
+        email: 'bob@bob.com'
+      })
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('add user', done => {
+    const userId = Math.floor(Math.random()*1000000);
+    request(server)
+      .post('/api/addUser')
+      .set('x-session-id', '1323268850077976000000')
+      .send({
+        username: 'testUserAdd' + userId,
+        name: 'Test User Add ' + userId,
+        email: 'testUserAdd' + userId + '@tracker.com',
+        company: 'Larry Tracker',
+        clientCode: 'client_1',
+        userType: 'user',
+
+      })
+      .expect(200, done);
+  });
+  it('add user - not authorized', done => {
+    const userId = Math.floor(Math.random()*1000000);
+    request(server)
+      .post('/api/addUser')
+      .set('x-session-id', '32132328850077976000000')
+      .send({
+        username: 'testUserAdd' + userId,
+        name: 'Test User Add ' + userId,
+        email: 'testUserAdd' + userId + '@tracker.com',
+        company: 'Larry Tracker',
+        clientCode: 'client_1',
+        userType: 'user',
+
+      })
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
 });
