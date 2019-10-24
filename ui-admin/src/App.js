@@ -16,19 +16,6 @@ import {Navbar, Nav, NavDropdown} from 'react-bootstrap'
 const history = createBrowserHistory()
 
 class App extends Component {
-  previousLocation = this.props.location;
-  UNSAFE_componentWillUpdate(nextProps) {
-    let { location } = this.props;
-
-    // set previousLocation if props.location is not modal
-    if (
-        nextProps.history.action !== "POP" &&
-        (!location.state || !location.state.modal)
-    ) {
-      this.previousLocation = this.props.location;
-    }
-  }
-
   render() {
 
     return (
@@ -36,16 +23,16 @@ class App extends Component {
           <Router history={history}>
             <div className="container">
               <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/dashboard/:id">Larry-Tracker</Navbar.Brand>
+                <Navbar.Brand href="/">Larry-Tracker</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="mr-auto">
                     <Nav.Link as={Link} to="/">Login</Nav.Link>
-                    <Nav.Link as={Link} to="/reset-password'">ResetPassword</Nav.Link>
+                    <Nav.Link as={Link} to="/reset-password">ResetPassword</Nav.Link>
                     <Nav.Link as={Link} to="/users">Users</Nav.Link>
-                    <Nav.Link as={Link} to="/dashboard/:id">User Dashboard</Nav.Link>
-                    <Nav.Link as={Link} to="/add-user">Edit User</Nav.Link>
-                    <Nav.Link as={Link} to="/users/:id">Add User</Nav.Link>
+                    <Nav.Link as={Link} to="/dashboard/testUser">User Dashboard</Nav.Link>
+                    <Nav.Link as={Link} to="/users/testUser">Edit User</Nav.Link>
+                    <Nav.Link as={Link} to="/add-user">Add User</Nav.Link>
                     <NavDropdown title="Profile" id="basic-nav-dropdown">
                       <NavDropdown.Item href="#action/3.1">My Profile</NavDropdown.Item>
                       <NavDropdown.Item href="#action/3.2">Setting</NavDropdown.Item>
