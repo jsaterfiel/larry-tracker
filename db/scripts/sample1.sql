@@ -76,4 +76,8 @@ VALUES('testUserLogin', 'testUserLogin@tracker.com', '$2b$10$RcrYFzyUrkCHiAPu6oU
 
 INSERT INTO `default`.users
 (username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('testUserUpdate', 'testUserUpdate@tracker.com','$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User Update', 'What is your favorite color?', 'Rainbow', '', '', 1, now());
+VALUES('testUserUpdate', 'testUserUpdate@tracker.com','$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User Update', 'What is your favorite color?', 'Rainbow', '', '1234567890', 1, now());
+
+INSERT INTO `default`.users
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testUserSignup', 'testUserSignup@tracker.com','', 'client_1', 'user', 'Larry Tracker', 'Test User Signup', 'What is your favorite color?', '', '', '1234567890', 1, now());
