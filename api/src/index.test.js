@@ -236,4 +236,30 @@ describe('loading express', () => {
         error: 'Unauthorized'
       }, done);
   });
+  it('signup user', done => {
+    request(server)
+      .post('/api/signup')
+      .send({
+        signupHash: '1234567890',
+        username: 'testUserSignup',
+        securityQuestion: 'What is your favorite movie?',
+        securityAnswer: 'Star Wars',
+        password: 'P@ssw0rd'
+      })
+      .expect(200, done);
+  });
+  it('signup user -- password err', done => {
+    request(server)
+      .post('/api/signup')
+      .send({
+        signupHash: '1234567890',
+        username: 'testUserSignup',
+        securityQuestion: 'What is your favorite movie?',
+        securityAnswer: 'Star Wars',
+        password: 'test'
+      })
+      .expect(500, {
+        error: 'password must be at least 8 characters long'
+      },done);
+  });
 });

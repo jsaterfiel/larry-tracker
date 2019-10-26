@@ -383,6 +383,7 @@ app.post('/api/addUser', async (req, res) => {
  * @property {string} company
  * @property {string} userType
  * @property {string} clientCode
+ * @property {string} signupHash
  * @property {number} active
  */
 /**
@@ -402,6 +403,33 @@ app.get('/api/getUser', async (req, res) => {
     }
     const output = await users.getUser(req.query.username);
     res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * @typedef signupRequest
+ * @property {string} signupHash.required
+ * @property {string} username.required
+ * @property {string} securityQuestion.required What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @property {string} securityAnswer.required
+ * @property {string} password.required
+ */
+/**
+ * Signup Password
+ * What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @route POST /signup
+ * @param {signupRequest.model} signup.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @returns 200
+ * @group Auth
+ */
+app.post('/api/signup', async (req, res) => {
+  try {
+    await auth.signup(req.body.signupHash, req.body.username, req.body.securityQuestion, req.body.securityAnswer, req.body.password);
+    res.send('');
   } catch (err) {
     res.status(500).send( {error: err.message} );
   }
