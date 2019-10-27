@@ -27,7 +27,12 @@ const api = {
     }
 
     //validate the password
-    const isValid = await bcrypt.compare(password, user.password);
+    let isValid = false;
+    try {
+      isValid = await bcrypt.compare(password, user.password);
+    } catch (e) {
+      // ignored purposefully
+    }
 
     if (!isValid) {
       throw Error('Invalid credentials');

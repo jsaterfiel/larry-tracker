@@ -42,6 +42,18 @@ expressSwagger(options);
 
 const port = process.env.API_PORT || 8181;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Expose-Headers', 'x-session-id');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-session-id');
+  res.header('Content-Type', 'application/json');
+  if (req.method === 'OPTIONS') {
+    res.end();
+  } else {
+    next();
+  }
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
