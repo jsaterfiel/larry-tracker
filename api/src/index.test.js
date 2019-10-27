@@ -11,11 +11,6 @@ const server = require('./index.js');
  */
 
 describe('loading express', () => {
-  it('responds to /', done => {
-    request(server)
-      .get('/')
-      .expect(200, done);
-  });
   it('404 everything else', done => {
     request(server)
       .get('/foo/bar')
