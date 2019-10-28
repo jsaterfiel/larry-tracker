@@ -81,7 +81,7 @@ const util = {
   getUserFromRequest: async (req) => {
     const sessionID = req.header('x-session-id');
 
-    if (!sessionID) throw Error('missing x-session-id header');
+    if (!sessionID) throw Error('Session Error.  Try logging in again.');
 
     let user;
     try {

@@ -17,7 +17,6 @@ class EditUser extends Component {
   }
   
   validateEmail(evt) {
-    console.log(evt.target.value);
     if ( evt.target.value === "" ||  EMAIL_REGEX.test(String(evt.target.value).toLowerCase()) ) {
       this.setState({
         invalidEmail: false

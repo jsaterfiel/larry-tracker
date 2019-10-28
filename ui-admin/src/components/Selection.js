@@ -42,7 +42,7 @@ class Selection extends Component {
                     <select
                         className=" y-1 "
                         name="yearFrom"
-                        value={this.props.yearFrom}
+                        defaultValue={this.props.yearFrom}
                         onChange={this.props.onChangeYear}
                     >
                         {years.map(y => {
@@ -71,7 +71,7 @@ class Selection extends Component {
                     <select
                         className="listbox-area y-2 "
                         name="yearTo"
-                        value={this.props.yearTo}
+                        defaultValue={this.props.yearTo}
                         onChange={this.props.onChangeYear}
                     >
                         {years.map(y => {
@@ -85,7 +85,7 @@ class Selection extends Component {
                     <select
                         className=" m-2 "
                         name="monthTo"
-                        value={this.props.monthTo}
+                        defaultValue={this.props.monthTo}
                         onChange={this.props.onChangeMonth}
                     >
                         {month.map(m => {
