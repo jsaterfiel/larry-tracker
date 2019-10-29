@@ -1,7 +1,9 @@
 .LoginPage {
-  max-width: 500px !important;
   .logo {
     border-radius: 50%;
     border: 8px solid black;
   }
+}
+.BasicWidth {
+  max-width: 500px !important;
 }

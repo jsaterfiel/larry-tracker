@@ -180,7 +180,10 @@ describe('loading express', () => {
       .send({
         username: 'testUserUpdate',
         name: 'Bob',
-        email: 'bob@bob.com'
+        email: 'bob@bob.com',
+        company: 'Test Company',
+        clientCode: 'client_4',
+        active: 1
       })
       .expect(200, done);
   });

@@ -9,6 +9,11 @@ let sessionID = null;
 apiInstance.HEADER_SESSION_ID = 'x-session-id';
 apiInstance.interceptors.request.use((config) => {
   config.url = API_URL + config.url;
+  if (config.url.indexOf('?') > 0) {
+    config.url += '&t=' + Date.now();
+  } else {
+    config.url += '?t=' + Date.now();
+  }
   if (sessionID) {
     config.headers = {[apiInstance.HEADER_SESSION_ID]: sessionID};
   }

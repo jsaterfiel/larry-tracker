@@ -118,11 +118,11 @@ const api = {
    */
   resetPassword: async (username, securityQuestion, securityQuestionAnswer, newPassword) => {
     //validate inputs
-    if ( !username ) throw Error('username is required');
-    if ( !securityQuestion ) throw Error('securityQuestion is required');
-    if ( !securityQuestionAnswer ) throw Error('securityQuestionAnswer is required');
-    if ( !newPassword ) throw Error('newPassword is required');
-    if ( newPassword.length < 8 ) throw Error('password must be at least 8 characters long');
+    if ( !username ) throw Error('Login is required');
+    if ( !securityQuestion ) throw Error('Security Question is required');
+    if ( !securityQuestionAnswer ) throw Error('Security Answer is required');
+    if ( !newPassword ) throw Error('New Password is required');
+    if ( newPassword.length < 8 ) throw Error('New Password must be at least 8 characters long');
 
     // get user by username
     const user = await util.getUserData(username, '');

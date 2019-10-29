@@ -15,8 +15,7 @@ const api = {
   getUsers: async () => {
     const query = `select username, email, clientCode, userType, company, name, active
       from (select username, max(tstamp) as max_tstamp from \`default\`.users group by username) b
-      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp
-      where u.active = 1`.replace('\n','');
+      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp`.replace('\n','');
     const results = await db.query(query).toPromise();
     return results;
   },
@@ -30,7 +29,7 @@ const api = {
       throw Error('username is required');
     }
     const uname = username.replace(DB_ESC_REG, '');
-    const query = `select username, email, clientCode, userType, company, name, active
+    const query = `select username, email, clientCode, userType, company, name, signupHash, active
       from (select username, max(tstamp) as max_tstamp from \`default\`.users where username = '${uname}' group by username) b
       left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp
       where u.active = 1`.replace(/\n/g,' ');
@@ -67,9 +66,10 @@ const api = {
     if (clientCode && typeof clientCode == 'string') {
       data.clientCode = clientCode;
     }
-    if (active && typeof active == 'number' && (active === 1 || active === 0)) {
+    if (typeof active == 'number' && (active === 1 || active === 0)) {
       data.active = active;
     }
+
     const results = await util.updateUserData(data);
     if (!results) throw Error('Unable to save data');
   },
@@ -114,7 +114,7 @@ const api = {
     } catch(err) {
       throw Error(err.message + +JSON.stringify(userExists));
     }
-    if (userExists) throw Error('username is already in use ' +JSON.stringify(userExists));
+    if (userExists) throw Error('username is already in use');
 
     let user = {
       username: username,
