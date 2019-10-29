@@ -2,3 +2,15 @@ $theme-colors: (
   "primary": #003ad9,
   "danger": #f1b204
 );
+
+.logo {
+  border-radius: 50%;
+  border: 8px solid black;
+}
+.logo-small {
+  border-radius: 50%;
+  border: 2px solid black;
+}
+.BasicWidth {
+  max-width: 500px !important;
+}

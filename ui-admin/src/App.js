@@ -10,6 +10,7 @@ import Signup from './views/Signup';
 import { createBrowserHistory } from 'history';
 import { Navbar, Nav } from 'react-bootstrap';
 import AuthAPI from './services/auth';
+import logoSmall from './larry-small.png';
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory()
@@ -81,7 +82,7 @@ class App extends Component {
           <Router history={history}>
             <div className="container">
               <Navbar bg="light" expand="lg">
-                <Navbar.Brand as={Link} to={this.state.homeLink}>Larry-Tracker</Navbar.Brand>
+                <Navbar.Brand as={Link} to={this.state.homeLink}><img className="logo-small" src={logoSmall} alt="Small Logo" /> Larry Tracker</Navbar.Brand>
                 <Nav className="mr-auto" fill={true}>
                   {loginData &&
                   <Nav.Link href="/" onClick={this.logout}>Logout</Nav.Link>}
