@@ -109,7 +109,7 @@ class EditUser extends Component {
     // Create new element
     var el = document.createElement('textarea');
     // Set value (string to be copied)
-    el.value = document.location.protocol + "//" + document.location.host + "/signup/" + this.state.signupHash;
+    el.value = document.location.protocol + "//" + document.location.host + "/signup/" + this.state.signupHash + "?username=" + this.state.username;
     // Set non-editable to avoid focus and move outside of view
     el.setAttribute('readonly', '');
     el.style = {position: 'absolute', left: '-9999px'};

@@ -54,8 +54,8 @@ const api = {
     });
     return true;
   },
-
-  signUp: async (signupHash, username, securityQuestion, securityAnswer, password) => {
+  
+  signup: async (signupHash, username, securityQuestion, securityAnswer, password) => {
     await apiInstance.post('api/signup', {
       signupHash: signupHash,
       username: username,

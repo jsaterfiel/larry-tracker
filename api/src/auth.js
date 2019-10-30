@@ -178,7 +178,8 @@ const api = {
       securityQuestion: securityQuestion,
       securityAnswer: securityAnswer,
       sessionID: '', //reset session as well as a security precaution
-      signupHash: ''
+      signupHash: '',
+      active: 1
     });
   }
 };

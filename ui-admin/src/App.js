@@ -94,7 +94,7 @@ class App extends Component {
                 <Route exact path='/users' component={Users} />
                 <Route exact path='/dashboard/:username' component={Dashboard} />
                 <Route exact path='/add-user' component={AddUser} />
-                <Route exact path='/signup/:hash' component={Signup} />
+                <Route exact path='/signup/:signupHash' component={Signup} />
                 <Route exact path='/users/:username' component={EditUser} />
               </Switch>
             </div>
