@@ -4,7 +4,7 @@ import { Router, Route } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
 const history = createMemoryHistory()
 
-const TestRouter = ({ ComponentWithRedirection, RedirectUrl }) => (
+const TestRouter = ({ ComponentWithRedirection, RedirectUrl, }) => (
   <Router history={history}>
     <Route path="/" exact={true} render={() => <ComponentWithRedirection />} />
     <Route path={RedirectUrl} render={() => <div>{RedirectUrl}</div>} />

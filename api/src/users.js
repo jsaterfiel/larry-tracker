@@ -15,8 +15,7 @@ const api = {
   getUsers: async () => {
     const query = `select username, email, clientCode, userType, company, name, active
       from (select username, max(tstamp) as max_tstamp from \`default\`.users group by username) b
-      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp
-      where u.active = 1`.replace('\n','');
+      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp`.replace('\n','');
     const results = await db.query(query).toPromise();
     return results;
   },
@@ -30,10 +29,9 @@ const api = {
       throw Error('username is required');
     }
     const uname = username.replace(DB_ESC_REG, '');
-    const query = `select username, email, clientCode, userType, company, name, active
+    const query = `select username, email, clientCode, userType, company, name, signupHash, active
       from (select username, max(tstamp) as max_tstamp from \`default\`.users where username = '${uname}' group by username) b
-      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp
-      where u.active = 1`.replace(/\n/g,' ');
+      left join \`default\`.users u on b.username = u.username and b.max_tstamp = u.tstamp`.replace(/\n/g,' ');
     const results = await db.query(query).toPromise();
     if (results) return results[0];
     return {};
@@ -67,15 +65,17 @@ const api = {
     if (clientCode && typeof clientCode == 'string') {
       data.clientCode = clientCode;
     }
-    if (active && typeof active == 'number' && (active === 1 || active === 0)) {
+    if (typeof active == 'number' && (active === 1 || active === 0)) {
       data.active = active;
     }
+
     const results = await util.updateUserData(data);
     if (!results) throw Error('Unable to save data');
   },
 
   /**
-   * Users.AddUser Admin adds a user
+   * Users.AddUser Admin adds a user.  User is created inactive with a signup hash.
+   * An admin can copy the signup url and email it to the user.
    * @param {String} username
    * @param {String} email
    * @param {String} userType (admin, user)
@@ -114,7 +114,7 @@ const api = {
     } catch(err) {
       throw Error(err.message + +JSON.stringify(userExists));
     }
-    if (userExists) throw Error('username is already in use ' +JSON.stringify(userExists));
+    if (userExists) throw Error('username is already in use');
 
     let user = {
       username: username,
@@ -123,7 +123,8 @@ const api = {
       email: email,
       company: company,
       name: name,
-      active: 1,
+      active: 0,
+      signupHash: Math.floor(Math.random()*1000000000000) + '',
       tstamp: Date.now()
     };
 
@@ -137,7 +138,7 @@ const api = {
     //updates the user.  some fields are not meant to be updated ever like, username, utype
     user.tstamp = new Date();
     const query = `INSERT INTO \`default\`.users
-    (username, clientCode, userType, email, company, name, active, tstamp)
+    (username, clientCode, userType, email, company, name, active, signupHash, tstamp)
     `.replace(/\n/g,' ');
 
     await db.insert(query, user).toPromise();

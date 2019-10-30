@@ -32,8 +32,11 @@ const api = {
     sessionStorage.setItem(KEY_LOGIN_SESSION_ID, result.headers[apiInstance.HEADER_SESSION_ID]);
     return result.data;
   },
+
   logout: async () => {
     let result
+    sessionStorage.setItem(KEY_LOGIN_DATA, null);
+    sessionStorage.setItem(KEY_LOGIN_SESSION_ID, null);
     try {
       result = await apiInstance.get('api/logout');
     } catch (e) {
@@ -41,35 +44,28 @@ const api = {
     }
     return result.data;
   },
-  resetPassword: async (username, secretQuestion, secretAnswer, newPassword) => {
-    let result;
-    try {
-      result = await apiInstance.post('api/resetPassword', {
-        username: username,
-        secretQuestion: secretQuestion,
-        secretAnswer: secretAnswer,
-        newPassword: newPassword
-      });
-    } catch (e) {
-      return false;
-    }
-    return result.data;
+
+  resetPassword: async (username, securityQuestion, securityAnswer, newPassword) => {
+    await apiInstance.post('api/resetPassword', {
+      username: username,
+      securityQuestion: securityQuestion,
+      securityAnswer: securityAnswer,
+      newPassword: newPassword
+    });
+    return true;
   },
-  signUp: async (signupHash, username, securityQuestion, securityAnswer, password) => {
-    let result
-    try {
-      result = await apiInstance.post('api/signup', {
-        signupHash: signupHash,
-        username: username,
-        securityQuestion: securityQuestion,
-        securityAnswer: securityAnswer,
-        password: password
-      });
-    } catch (e) {
-      return false;
-    }
-    return result.data;
+  
+  signup: async (signupHash, username, securityQuestion, securityAnswer, password) => {
+    await apiInstance.post('api/signup', {
+      signupHash: signupHash,
+      username: username,
+      securityQuestion: securityQuestion,
+      securityAnswer: securityAnswer,
+      password: password
+    });
+    return true;
   },
+
   getLoginData: () => {
     return loginData;
   }

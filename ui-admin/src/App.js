@@ -6,9 +6,11 @@ import AddUser from './views/AddUser';
 import Users from './views/Users';
 import Dashboard from './views/Dashboard';
 import ResetPassword from './views/ResetPassword';
+import Signup from './views/Signup';
 import { createBrowserHistory } from 'history';
 import { Navbar, Nav } from 'react-bootstrap';
 import AuthAPI from './services/auth';
+import logoSmall from './larry-small.png';
 
 // Create a history of your choosing (we're using a browser history in this case)
 const history = createBrowserHistory()
@@ -18,13 +20,54 @@ class App extends Component {
     super(props);
 
     this.logout = this.logout.bind(this);
+    this.loggedIn = this.loggedIn.bind(this);
 
     this.state = {
-      loggedOut: false
+      loggedOut: false,
+      homeLink: "/",
+      loggedIn: false
     }
   }
 
-  logout() {
+  componentDidMount() {
+    const loginData = AuthAPI.getLoginData();
+    let homeLink = "/";
+    if (loginData && loginData.userType) {
+      homeLink = "/users";
+      if (loginData && loginData.userType === 'user') {
+        homeLink = `/dashboard/${loginData.username}`;
+      }
+    }
+    if (this.state.homeLink !== homeLink) {
+      this.setState({
+        homeLink: homeLink
+      });
+    }
+  }
+  componentDidUpdate() {
+    const loginData = AuthAPI.getLoginData();
+    let homeLink = "/";
+    if (loginData && loginData.userType) {
+      homeLink = "/users";
+      if (loginData && loginData.userType === 'user') {
+        homeLink = `/dashboard/${loginData.username}`;
+      }
+    }
+    if (this.state.homeLink !== homeLink) {
+      this.setState({
+        homeLink: homeLink
+      });
+    }
+  }
+
+  loggedIn() {
+    this.setState({
+      loggedIn: true
+    })
+  }
+
+  logout(evt) {
+    evt.preventDefault();
     AuthAPI.logout()
       .finally( () => {
         window.location = '/';
@@ -32,31 +75,26 @@ class App extends Component {
   }
 
   render() {
+    const loginData = AuthAPI.getLoginData();
+
     return (
         <div className="App">
           <Router history={history}>
             <div className="container">
               <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/">Larry-Tracker</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                  <Nav className="mr-auto">
-                    <Nav.Link as={Link} to="/">Login</Nav.Link>
-                    <Nav.Link as={Link} to="/reset-password">ResetPassword</Nav.Link>
-                    <Nav.Link as={Link} to="/users">Users</Nav.Link>
-                    <Nav.Link as={Link} to="/dashboard/testUser">User Dashboard</Nav.Link>
-                    <Nav.Link as={Link} to="/users/testUser">Edit User</Nav.Link>
-                    <Nav.Link as={Link} to="/add-user">Add User</Nav.Link>
-                    <Nav.Link onClick={this.logout}>Logout</Nav.Link>
-                  </Nav>
-                </Navbar.Collapse>
+                <Navbar.Brand as={Link} to={this.state.homeLink}><img className="logo-small" src={logoSmall} alt="Small Logo" /> Larry Tracker</Navbar.Brand>
+                <Nav className="mr-auto" fill={true}>
+                  {loginData &&
+                  <Nav.Link href="/" onClick={this.logout}>Logout</Nav.Link>}
+                </Nav>
               </Navbar>
               <Switch>
-                <Route exact path='/' component={Login} />
+                <Route exact path='/' render={() => <Login loggedIn={this.loggedIn} />}/>
                 <Route exact path='/reset-password' component={ResetPassword} />
                 <Route exact path='/users' component={Users} />
                 <Route exact path='/dashboard/:username' component={Dashboard} />
                 <Route exact path='/add-user' component={AddUser} />
+                <Route exact path='/signup/:signupHash' component={Signup} />
                 <Route exact path='/users/:username' component={EditUser} />
               </Switch>
             </div>
