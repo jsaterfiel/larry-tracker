@@ -159,6 +159,7 @@ describe('loading express', () => {
         username: 'monsters',
         email: 'mikey@monsters.inc',
         clientCode: 'client_1',
+        signupHash: '',
         userType: 'user',
         company: 'Monsters Inc.',
         name: 'Mikey',
