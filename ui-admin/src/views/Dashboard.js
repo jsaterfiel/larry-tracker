@@ -1,48 +1,59 @@
 import React, { Component } from 'react';
 import { Card, Button, Container, Row, Col,Table } from 'react-bootstrap';
 import JointScatterChart from "../components/charts/JointScatterChart";
-import ScatterChart from "../components/charts/ScatterChart";
 import { ResponsiveContainer } from "recharts"
-import Selection from "../components/Selection";
+import DatePicker from '../components/DatePicker'
+import axios from 'axios';
 
 class Dashboard extends Component {
-    state = {
-        userConfig: {
-            tooltip: {
-                pointFormat: "<b>{point.y} thousand megawatthours</b>"
-            },
-            plotOptions: {
-                pie: {
-                    showInLegend: true,
-                    innerSize: "60%",
-                    dataLabels: {
-                        enabled: false,
-                        distance: -14,
-                        color: "white",
-                        style: {
-                            fontweight: "bold",
-                            fontsize: 50
+
+    constructor(props) {
+        super(props);
+
+        this.handleDateChanged = this.handleDateChanged.bind(this);
+
+        this.state = {
+            userConfig: {
+                tooltip: {
+                    pointFormat: "<b>{point.y} thousand megawatthours</b>"
+                },
+                plotOptions: {
+                    pie: {
+                        showInLegend: true,
+                        innerSize: "60%",
+                        dataLabels: {
+                            enabled: false,
+                            distance: -14,
+                            color: "white",
+                            style: {
+                                fontweight: "bold",
+                                fontsize: 50
+                            }
                         }
                     }
                 }
-            }
-        },
-        yearFrom: "2001",
-        yearTo: "2015",
-        msg: "Select the range"
-    };
+            },
+            startDate: new Date("2019-10-27"),
+            endDate: new Date("2019-10-27"),
+            data: []
+        };
+    }
+
+    async getData(startDate, endDate){
+        const baseURL = "http://localhost:8181"
+        const response = await axios.get(baseURL);
+    }
+
+    handleDateChanged(from, to){
+        this.setState({startDate: from, endDate: to});
+    }
 
     render() {
         return (
             <div className="DashboardPage">
                 <h1 className="main-title">Acme Inc. Revenue Analysis</h1>
                 <Container>
-                    <Selection
-                        yearFrom={this.state.yearFrom}
-                        yearTo={this.state.yearTo}
-                        //onChangeYear={this.handleChangeYear}
-                        //onSubmit={this.handleSubmit}
-                    />
+                    <DatePicker dateChanged={this.handleDateChanged}/>
                     <Row>
                         <Col>
                             <Card>
@@ -75,64 +86,15 @@ class Dashboard extends Component {
                             </Card>
                         </Col>
                     </Row>
-
-                    <Row>
-                        <Col xs={6}>
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>Revenue</Card.Title>
-                                    <ResponsiveContainer width="100%" height={400}>
-                                        <ScatterChart/>
-                                    </ResponsiveContainer>
-
-                                    <Button variant="primary">Detail</Button>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        <Col xs={6}>
-                            <Card>
-                                <Card.Body>
-                                    <Card.Title>User's Behavior</Card.Title>
-                                    <ResponsiveContainer width="100%" height={400}>
-                                        <JointScatterChart/>
-                                    </ResponsiveContainer>
-
-                                    <Button variant="primary">Detail</Button>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-
-                    <Table striped bordered hover>
-                        <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Username</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td colSpan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                        </tr>
-                        </tbody>
-                    </Table>
-
+                    <Card>
+                        <Card.Header as="h5">Featured</Card.Header>
+                        <Card.Body>
+                            <ResponsiveContainer width="100%" height={400}>
+                                <JointScatterChart startDate={this.state.startDate} endDate={this.state.endDate}/>
+                            </ResponsiveContainer>
+                            <Button variant="primary">Detail</Button>
+                        </Card.Body>
+                    </Card>
                 </Container>
             </div>
         );
