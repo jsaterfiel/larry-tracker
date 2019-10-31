@@ -98,6 +98,7 @@ describe('loading express', () => {
       })
       .expect('x-session-id', /.?/)
       .expect(200, {
+        clientCode: 'client_1',
         username: 'testUserLogin',
         name: 'Test User Login',
         company: 'Larry Tracker',
