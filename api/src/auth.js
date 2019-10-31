@@ -55,7 +55,8 @@ const api = {
       username: user.username,
       name: user.name,
       company: user.company,
-      userType: user.userType
+      userType: user.userType,
+      clientCode: user.clientCode
     };
   },
 

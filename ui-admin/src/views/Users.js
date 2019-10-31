@@ -96,7 +96,7 @@ class Users extends Component {
               <tbody>
               {this.state.users.map((user) => 
                 <tr key={user.username}>
-                  <td><Link to={'/dashboard/' + user.username}>{user.username}</Link></td>
+                  <td>{user.userType === "user" ? (<Link to={'/dashboard/' + user.username}>{user.username}</Link>) : (<>{user.username}</>)}</td>
                   <td>{user.name}</td>
                   <td>{user.company}</td>
                   <td>{user.userType === "admin" ?

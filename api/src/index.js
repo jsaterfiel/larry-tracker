@@ -219,6 +219,7 @@ app.get('/api/client-levels', async (req, res) => {
  * @property {string} name
  * @property {string} company
  * @property {string} userType
+ * @property {string} clientCode
  */
 /**
  * Returns the list of clients orderd by name ascending

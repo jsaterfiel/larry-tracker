@@ -40,6 +40,9 @@ describe('loading express', () => {
           ivtCount: 0
         },
         {
+          startDate: '2019-09-29'
+        },
+        {
           startDate: '2019-09-30',
           impressions: 1,
           dentsuOTSCount: 0,

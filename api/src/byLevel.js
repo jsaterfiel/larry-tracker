@@ -17,18 +17,22 @@ const api = {
    */
   process: async (startDate, endDate, client, level1) => {
     let whereClauses = [];
+    let startDateObj;
+    let endDateObj;
+    let startDateParts;
+    let endDateParts;
 
     //process start and end dates
     if (startDate && endDate && typeof startDate == 'string' && typeof endDate == 'string') {
       startDate = startDate.replace(DB_ESC_REG, '');
       endDate = endDate.replace(DB_ESC_REG, '');
-      const startDateParts = startDate.split('-');
-      const endDateParts = endDate.split('-');
+      startDateParts = startDate.split('-');
+      endDateParts = endDate.split('-');
       // verify the dates are valid
       if (startDateParts.length === 3 && parseInt(startDateParts[0]) && parseInt(startDateParts[1]) && parseInt(startDateParts[2])
         && endDateParts.length === 3 && parseInt(endDateParts[0]) && parseInt(endDateParts[1]) && parseInt(endDateParts[2])) {
-        const startDateObj = new Date(parseInt(startDateParts[0]), parseInt(startDateParts[1])+1, parseInt(startDateParts[2]));
-        const endDateObj = new Date(parseInt(endDateParts[0]), parseInt(endDateParts[1])+1, parseInt(endDateParts[2]));
+        startDateObj = new Date(parseInt(startDateParts[0]), parseInt(startDateParts[1])-1, parseInt(startDateParts[2]));
+        endDateObj = new Date(parseInt(endDateParts[0]), parseInt(endDateParts[1])-1, parseInt(endDateParts[2]));
         // Final date invalid checks
         if (!startDateObj || !endDateObj) {
           throw Error('startDate and/or endDate are invalid');
@@ -78,7 +82,30 @@ const api = {
     order by start_date asc;`.replace(/\n/g,' ');
 
     let rows = await db.query(query).toPromise();
-    return rows;
+
+    const dates = [];
+    for (let i = startDateObj.getTime(); i <= endDateObj.getTime(); i = startDateObj.setDate(startDateObj.getDate() + 1)) {
+      let month = startDateObj.getMonth()+1;
+      let dte = startDateObj.getDate();
+      dates.push(startDateObj.getFullYear() + '-' + (month < 10 ? '0': '') + month + '-' + (dte < 10 ? '0' : '') +dte);
+    }
+
+    const datesByRow = {};
+    for(let row of rows) {
+      datesByRow[row.startDate] = row;
+    }
+
+    const output = [];
+    for(let date of dates) {
+      if (datesByRow[date]) {
+        output.push(datesByRow[date]);
+      } else {
+        output.push({
+          startDate: date
+        });
+      }
+    }
+    return output;
   }
 };
 
