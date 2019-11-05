@@ -36,6 +36,7 @@ group by client_code, level1_id, start_date;
 
 CREATE TABLE `default`.users (
 	username String,
+	email String,
 	password String,
 	clientCode String,
 	userType Enum('user' = 1, 'admin' = 2),

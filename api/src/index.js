@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const collection = require('./collection');
 const byLevel = require('./byLevel');
 const lookup = require('./lookup');
+const users = require('./users');
 const auth = require('./auth');
 const ping = require('./ping');
 const util = require('./util');
@@ -41,6 +42,18 @@ expressSwagger(options);
 
 const port = process.env.API_PORT || 8181;
 
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Expose-Headers', 'x-session-id');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, x-session-id');
+  res.header('Content-Type', 'application/json');
+  if (req.method === 'OPTIONS') {
+    res.end();
+  } else {
+    next();
+  }
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -115,6 +128,7 @@ app.get('/api/collection', async (req, res) => {
  * ClientCode is required if you're an admin else it's ignored and retrieved from your user record.
  * @route GET /by-level
  * @param {string} clientCode.query example: client_1
+ * @param {string} level1.query example: 1111
  * @param {string} startDate.query.required example: 2019-09-27
  * @param {string} endDate.query.required example: 2019-09-30
  * @produces application/json
@@ -199,6 +213,15 @@ app.get('/api/client-levels', async (req, res) => {
  * @property {string} password.required 
  */
 /**
+ * @typedef LoginResponse
+ * @property {string} sessionID
+ * @property {string} username
+ * @property {string} name
+ * @property {string} company
+ * @property {string} userType
+ * @property {string} clientCode
+ */
+/**
  * Returns the list of clients orderd by name ascending
  * Admin Test Data:
  * u: larry
@@ -211,7 +234,7 @@ app.get('/api/client-levels', async (req, res) => {
  * @param {LoginRequest.model} login.body.required
  * @produces application/json
  * @consumes application/json
- * @returns {Array.<ResponseClientLevel>} 200 - levels for client
+ * @returns {LoginResponse.model} 200
  * @group Auth
  */
 app.post('/api/login', async (req, res) => {
@@ -254,7 +277,7 @@ app.get('/api/logout', async (req, res) => {
  * Reset Password
  * What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
  * @route POST /resetPassword
- * @param {ResetPasswordReqeust.model} resetPW.body.required
+ * @param {ResetPasswordReqeust.model} resetPassword.body.required
  * @produces application/json
  * @consumes application/json
  * @returns 200
@@ -263,6 +286,162 @@ app.get('/api/logout', async (req, res) => {
 app.post('/api/resetPassword', async (req, res) => {
   try {
     await auth.resetPassword(req.body.username, req.body.securityQuestion, req.body.securityAnswer, req.body.newPassword);
+    res.send('');
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * @typedef GetUsersResponse
+ * @property {string} username
+ * @property {string} email
+ * @property {string} name
+ * @property {string} company
+ * @property {string} userType
+ * @property {string} clientCode
+ * @property {number} active
+ */
+/**
+ * Get Users
+ * Admin route. Returns the list list of users. 
+ * @route GET /getUsers
+ * @security ApiKey
+ * @returns {Array.<GetUsersResponse>} 200
+ * @group Users
+ */
+app.get('/api/getUsers', async (req, res) => {
+  try {
+    const user = await util.getUserFromRequest(req);
+    if (user.userType != 'admin') {
+      throw Error ('Unauthorized');
+    }
+    const output = await users.getUsers();
+    res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+/**
+ * @typedef UpdateUserRequest
+ * @property {string} username.required
+ * @property {string} name
+ * @property {string} email
+ * @property {string} company
+ * @property {string} clientCode
+ * @property {number} active
+ */
+/**
+ * Update User
+ * Admin Route.  Updates a user.
+ * @route POST /updateUser
+ * @param {UpdateUserRequest.model} updateUser.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @security ApiKey
+ * @returns 200
+ * @group Users
+ */
+app.post('/api/updateUser', async (req, res) => {
+  try {
+    const user = await util.getUserFromRequest(req);
+    if (user.userType != 'admin') {
+      throw Error ('Unauthorized');
+    }
+    await users.updateUser(req.body.username, req.body.email, req.body.name, req.body.company, req.body.clientCode, req.body.active);
+    res.send('');
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * @typedef AddUserRequest
+ * @property {string} username.required
+ * @property {string} name.required
+ * @property {string} email.required
+ * @property {string} company.required
+ * @property {string} clientCode required if usertype is user, do not pass if admin
+ * @property {string} userType.required admin/user
+ */
+/**
+ * Add User
+ * Admin Route.  Adds a user.  userType can only be user/admin.  clientCode is only for users not admins.
+ * @route POST /addUser
+ * @param {AddUserRequest.model} AddUser.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @security ApiKey
+ * @returns 200
+ * @group Users
+ */
+app.post('/api/addUser', async (req, res) => {
+  try {
+    const user = await util.getUserFromRequest(req);
+    if (user.userType != 'admin') {
+      throw Error ('Unauthorized');
+    }
+    const output = await users.addUser(req.body.username, req.body.email, req.body.userType, req.body.name, req.body.company, req.body.clientCode);
+    res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * @typedef GetUsersResponse
+ * @property {string} username
+ * @property {string} email
+ * @property {string} name
+ * @property {string} company
+ * @property {string} userType
+ * @property {string} clientCode
+ * @property {string} signupHash
+ * @property {number} active
+ */
+/**
+ * Get Users
+ * Admin route. Returns the list list of users. 
+ * @route GET /getUser
+ * @param {string} username.query.required
+ * @security ApiKey
+ * @returns {GetUsersResponse.model} 200
+ * @group Users
+ */
+app.get('/api/getUser', async (req, res) => {
+  try {
+    const user = await util.getUserFromRequest(req);
+    if (user.userType != 'admin') {
+      throw Error ('Unauthorized');
+    }
+    const output = await users.getUser(req.query.username);
+    res.send(output);
+  } catch (err) {
+    res.status(500).send( {error: err.message} );
+  }
+});
+
+/**
+ * @typedef signupRequest
+ * @property {string} signupHash.required
+ * @property {string} username.required
+ * @property {string} securityQuestion.required What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @property {string} securityAnswer.required
+ * @property {string} password.required
+ */
+/**
+ * Signup Password
+ * What is your favorite color?  What is your favorite movie?  Who is your favorite teacher?
+ * @route POST /signup
+ * @param {signupRequest.model} signup.body.required
+ * @produces application/json
+ * @consumes application/json
+ * @returns 200
+ * @group Auth
+ */
+app.post('/api/signup', async (req, res) => {
+  try {
+    await auth.signup(req.body.signupHash, req.body.username, req.body.securityQuestion, req.body.securityAnswer, req.body.password);
     res.send('');
   } catch (err) {
     res.status(500).send( {error: err.message} );

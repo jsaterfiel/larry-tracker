@@ -3,31 +3,28 @@ import { Redirect } from 'react-router-dom';
 import { Form, Button, Alert } from 'react-bootstrap';
 import AuthAPI from '../services/auth';
 
-class ResetPassword extends Component {
+class Signup extends Component {
   constructor(props) {
     super(props);
 
+    this.username = props.location.search.substring(10);
+    this.signupHash = props.match.params.signupHash;
+
     this.state = {
       errorMsg: '',
-      username: false,
       securityQuestion: false,
       securityAnswer: false,
-      newPassword: false,
+      password: false,
+      confirmPassword: false,
       redirectHome: false
     };
 
-    this.getUsername = this.getUsername.bind(this);
     this.getSecurityQuestion = this.getSecurityQuestion.bind(this);
     this.getSecurityAnswer = this.getSecurityAnswer.bind(this);
-    this.getNewPassword = this.getNewPassword.bind(this);
-    this.doResetPassword = this.doResetPassword.bind(this);
+    this.getPassword = this.getPassword.bind(this);
+    this.getConfirmPassword = this.getConfirmPassword.bind(this);
+    this.doSignup = this.doSignup.bind(this);
     this.dismissAlert = this.dismissAlert.bind(this);
-  }
-
-  getUsername(evt) {
-    this.setState({
-      username: evt.target.value
-    });
   }
 
   getSecurityQuestion(evt) {
@@ -42,16 +39,28 @@ class ResetPassword extends Component {
     });
   }
 
-  getNewPassword(evt) {
+  getPassword(evt) {
     this.setState({
-      newPassword: evt.target.value
+      password: evt.target.value
     });
   }
 
-  async doResetPassword() {
-    if (!this.state.username) {
+  getConfirmPassword(evt) {
+    this.setState({
+      confirmPassword: evt.target.value
+    });
+  }
+
+  async doSignup() {
+    if (!this.username) {
       this.setState({
-        errorMsg: 'Login is required'
+        errorMsg: 'Invalid link'
+      });
+      return;
+    }
+    if (!this.signupHash) {
+      this.setState({
+        errorMsg: 'Invalid link'
       });
       return;
     }
@@ -67,15 +76,21 @@ class ResetPassword extends Component {
       });
       return;
     }
-    if (!this.state.newPassword) {
+    if (!this.state.password) {
       this.setState({
-        errorMsg: 'New Password is required'
+        errorMsg: 'Password is required'
+      });
+      return;
+    }
+    if (!this.state.confirmPassword || this.state.confirmPassword !== this.state.password) {
+      this.setState({
+        errorMsg: 'Must confirm password'
       });
       return;
     }
 
     try {
-      await AuthAPI.resetPassword(this.state.username, this.state.securityQuestion, this.state.securityAnswer, this.state.newPassword);
+      await AuthAPI.signup(this.signupHash, this.username, this.state.securityQuestion, this.state.securityAnswer, this.state.password);
     } catch (err) {
       if (err && err.response && err.response.data) {
         this.setState({
@@ -105,11 +120,12 @@ class ResetPassword extends Component {
       return <Redirect to='/' />;
     }
     return (
-      <div className="ResetPasswordPage BasicWidth container">
+      <div className="SignupPage BasicWidth container">
         <div className="col">
           <div className="row">
             <div className="col text-center">
-              <h1 className="primary">Reset Password</h1>
+              <h1 className="primary">Welcome to Larry Tracker</h1>
+              <p>Please finish setting up your account</p>
             </div>
           </div>
           <div className="row mt-5">
@@ -123,11 +139,15 @@ class ResetPassword extends Component {
                   </p>
                 </Alert>}
                 <Form.Group>
-                  <Form.Label>Login</Form.Label>
-                  <Form.Control type="text" placeholder="Enter username" onChange={this.getUsername}/>
+                  <Form.Label>Password</Form.Label>
+                  <Form.Control type="password" placeholder="Password" onChange={this.getPassword}/>
                 </Form.Group>
                 <Form.Group>
-                  <Form.Label>Your Security Question</Form.Label>
+                  <Form.Label>Confirm Password</Form.Label>
+                  <Form.Control type="password" placeholder="Confirm Password" onChange={this.getConfirmPassword}/>
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Security Question</Form.Label>
                   <Form.Control as="select" onChange={this.getSecurityQuestion}>
                     <option></option>
                     <option>What is your favorite color?</option>
@@ -136,15 +156,11 @@ class ResetPassword extends Component {
                   </Form.Control>
                 </Form.Group>
                 <Form.Group>
-                  <Form.Label>Your Security Answer</Form.Label>
+                  <Form.Label>Security Answer</Form.Label>
                   <Form.Control type="text" placeholder="Security Answer" onChange={this.getSecurityAnswer}/>
                 </Form.Group>
-                <Form.Group>
-                  <Form.Label>New Password</Form.Label>
-                  <Form.Control type="password" placeholder="New Password" onChange={this.getNewPassword}/>
-                </Form.Group>
-                <Button variant="primary" onClick={this.doResetPassword}>
-                  Reset Password
+                <Button variant="primary" onClick={this.doSignup}>
+                  Finish
                 </Button>
               </Form>
             </div>
@@ -155,4 +171,4 @@ class ResetPassword extends Component {
   }
 }
 
-export default ResetPassword;
+export default Signup;

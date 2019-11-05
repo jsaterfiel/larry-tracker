@@ -51,25 +51,33 @@ VALUES('client_1', '1111', '2019-09-28', '156977236072|33346862409425390', array
 
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('larry', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', '', 'admin', 'Larry Tracker', 'Larry the CEO', 'What is your favorite color?', 'Rainbow', '733468850077976000000', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('larry', 'larry@tracker.com', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', '', 'admin', 'Larry Tracker', 'Larry the CEO', 'What is your favorite color?', 'Rainbow', '733468850077976000000', '', 1, now());
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('monsters', '$2b$10$4mdfswCm768rQZ/OfLSDBeQwfnAPvXIFuA2BwIQBp6h10650s.dNq', 'client_1', 'user', 'Monsters Inc.', 'Mikey', 'What is your favorite color?', 'Green', '', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('monsters', 'mikey@monsters.inc', '$2b$10$4mdfswCm768rQZ/OfLSDBeQwfnAPvXIFuA2BwIQBp6h10650s.dNq', 'client_1', 'user', 'Monsters Inc.', 'Mikey', 'What is your favorite color?', 'Green', '', '', 1, now());
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('british.spies', '$2b$10$dYid7pMlBSHGlE1GEutgt.3Htxf/.GcvPJqJ3CafqPGBgb7yiyUT.', 'client_2', 'user', 'MI-6', 'James Bond', 'What is your favorite movie?', 'Casino Royal', '', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('british.spies', '007@mi6.gov.uk', '$2b$10$dYid7pMlBSHGlE1GEutgt.3Htxf/.GcvPJqJ3CafqPGBgb7yiyUT.', 'client_2', 'user', 'MI-6', 'James Bond', 'What is your favorite movie?', 'Casino Royal', '', '', 1, now());
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('testAdmin', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', '', 'admin', 'Larry Tracker', 'Test Admin', 'What is your favorite color?', 'Rainbow', '1323268850077976000000', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testAdmin', 'testAdmin@tracker.com', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', '', 'admin', 'Larry Tracker', 'Test Admin', 'What is your favorite color?', 'Rainbow', '1323268850077976000000', '', 1, now());
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('testUser', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User', 'What is your favorite color?', 'Rainbow', '32132328850077976000000', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testUser', 'testUser@tracker.com','$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User', 'What is your favorite color?', 'Rainbow', '32132328850077976000000', '', 1, now());
 
 INSERT INTO `default`.users
-(username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
-VALUES('testUserLogin', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User Login', 'What is your favorite color?', 'Rainbow', '', '', 1, now());
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testUserLogin', 'testUserLogin@tracker.com', '$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User Login', 'What is your favorite color?', 'Rainbow', '', '', 1, now());
+
+INSERT INTO `default`.users
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testUserUpdate', 'testUserUpdate@tracker.com','$2b$10$RcrYFzyUrkCHiAPu6oUMLedAJakYvWkqR.MyA1y2defNvPllhuZDW', 'client_1', 'user', 'Larry Tracker', 'Test User Update', 'What is your favorite color?', 'Rainbow', '', '1234567890', 1, now());
+
+INSERT INTO `default`.users
+(username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+VALUES('testUserSignup', 'testUserSignup@tracker.com','', 'client_1', 'user', 'Larry Tracker', 'Test User Signup', 'What is your favorite color?', '', '', '1234567890', 1, now());

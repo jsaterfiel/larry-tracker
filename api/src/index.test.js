@@ -11,11 +11,6 @@ const server = require('./index.js');
  */
 
 describe('loading express', () => {
-  it('responds to /', done => {
-    request(server)
-      .get('/')
-      .expect(200, done);
-  });
   it('404 everything else', done => {
     request(server)
       .get('/foo/bar')
@@ -43,6 +38,9 @@ describe('loading express', () => {
           interactions: 0,
           wasEverFullyInViewCount: 1,
           ivtCount: 0
+        },
+        {
+          startDate: '2019-09-29'
         },
         {
           startDate: '2019-09-30',
@@ -100,6 +98,7 @@ describe('loading express', () => {
       })
       .expect('x-session-id', /.?/)
       .expect(200, {
+        clientCode: 'client_1',
         username: 'testUserLogin',
         name: 'Test User Login',
         company: 'Larry Tracker',
@@ -123,5 +122,147 @@ describe('loading express', () => {
         newPassword: 'P@ssw0rd'
       })
       .expect(200, done);
+  });
+  it('get users', done => {
+    request(server)
+      .get('/api/getUsers')
+      .set('x-session-id', '1323268850077976000000')
+      .expect(resp => {
+        // throw Error(JSON.stringify(resp));
+        // need to limit the results to client_1 as there could be several clients since the data is live
+        for (let item of resp.body) {
+          if (item.username == 'testAdmin') {
+            resp.body = item;
+            break;
+          }
+        }
+      })
+      .expect(200, {
+        active: 1,
+        clientCode: '',
+        company: 'Larry Tracker',
+        email: 'testAdmin@tracker.com',
+        name: 'Test Admin',
+        userType: 'admin',
+        username: 'testAdmin'
+      }, done);
+  });
+  it('get users - not authorized', done => {
+    request(server)
+      .get('/api/getUsers')
+      .set('x-session-id', '32132328850077976000000')
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('get user', done => {
+    request(server)
+      .get('/api/getUser?username=monsters')
+      .set('x-session-id', '1323268850077976000000')
+      .expect(200, {
+        username: 'monsters',
+        email: 'mikey@monsters.inc',
+        clientCode: 'client_1',
+        signupHash: '',
+        userType: 'user',
+        company: 'Monsters Inc.',
+        name: 'Mikey',
+        active: 1
+      }, done);
+  });
+  it('get user - not authorized', done => {
+    request(server)
+      .get('/api/getUser?username=testUser')
+      .set('x-session-id', '32132328850077976000000')
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('update user', done => {
+    request(server)
+      .post('/api/updateUser')
+      .set('x-session-id', '1323268850077976000000')
+      .send({
+        username: 'testUserUpdate',
+        name: 'Bob',
+        email: 'bob@bob.com',
+        company: 'Test Company',
+        clientCode: 'client_4',
+        active: 1
+      })
+      .expect(200, done);
+  });
+  it('update user - not authorized', done => {
+    request(server)
+      .post('/api/updateUser')
+      .set('x-session-id', '32132328850077976000000')
+      .send({
+        username: 'testUserUpdate',
+        name: 'Bob',
+        email: 'bob@bob.com'
+      })
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('add user', done => {
+    const userId = Math.floor(Math.random()*1000000);
+    request(server)
+      .post('/api/addUser')
+      .set('x-session-id', '1323268850077976000000')
+      .send({
+        username: 'testUserAdd' + userId,
+        name: 'Test User Add ' + userId,
+        email: 'testUserAdd' + userId + '@tracker.com',
+        company: 'Larry Tracker',
+        clientCode: 'client_1',
+        userType: 'user',
+
+      })
+      .expect(200, done);
+  });
+  it('add user - not authorized', done => {
+    const userId = Math.floor(Math.random()*1000000);
+    request(server)
+      .post('/api/addUser')
+      .set('x-session-id', '32132328850077976000000')
+      .send({
+        username: 'testUserAdd' + userId,
+        name: 'Test User Add ' + userId,
+        email: 'testUserAdd' + userId + '@tracker.com',
+        company: 'Larry Tracker',
+        clientCode: 'client_1',
+        userType: 'user',
+
+      })
+      .expect(500, {
+        error: 'Unauthorized'
+      }, done);
+  });
+  it('signup user', done => {
+    request(server)
+      .post('/api/signup')
+      .send({
+        signupHash: '1234567890',
+        username: 'testUserSignup',
+        securityQuestion: 'What is your favorite movie?',
+        securityAnswer: 'Star Wars',
+        password: 'P@ssw0rd'
+      })
+      .expect(200, done);
+  });
+  it('signup user -- password err', done => {
+    request(server)
+      .post('/api/signup')
+      .send({
+        signupHash: '1234567890',
+        username: 'testUserSignup',
+        securityQuestion: 'What is your favorite movie?',
+        securityAnswer: 'Star Wars',
+        password: 'test'
+      })
+      .expect(500, {
+        error: 'password must be at least 8 characters long'
+      },done);
   });
 });

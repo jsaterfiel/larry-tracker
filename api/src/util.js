@@ -25,7 +25,7 @@ const util = {
     group by username, sessionID) c
     left join (select username, max(tstamp) as tstamp from \`default\`.users group by username) p on p.username = c.username and p.tstamp = c.tstamp
     group by p.username`;
-
+ 
     if (username) {
       whereClause = `select username, max(tstamp) as max_tstamp from \`default\`.users where username = '${uname}' group by username`;
     }
@@ -37,7 +37,8 @@ const util = {
     where u.active = 1`.replace(/\n/g,' ');
 
     let rows = await db.query(query).toPromise();
-    if (rows.length === 1) return rows[0];
+    // need this to avoid a single blank row response
+    if (rows.length === 1 && rows[0].username) return rows[0];
     return false;
   },
 
@@ -66,7 +67,7 @@ const util = {
     //updates the user.  some fields are not meant to be updated ever like, username, utype
     user.tstamp = new Date();
     const query = `INSERT INTO \`default\`.users
-    (username, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
+    (username, email, password, clientCode, userType, company, name, securityQuestion, securityAnswer, sessionID, signupHash, active, tstamp)
     `.replace(/\n/g,' ');
 
     await db.insert(query, user).toPromise();
@@ -80,7 +81,7 @@ const util = {
   getUserFromRequest: async (req) => {
     const sessionID = req.header('x-session-id');
 
-    if (!sessionID) throw Error('missing x-session-id header');
+    if (!sessionID) throw Error('Session Error.  Try logging in again.');
 
     let user;
     try {

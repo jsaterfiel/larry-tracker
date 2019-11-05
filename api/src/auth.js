@@ -27,7 +27,12 @@ const api = {
     }
 
     //validate the password
-    const isValid = await bcrypt.compare(password, user.password);
+    let isValid = false;
+    try {
+      isValid = await bcrypt.compare(password, user.password);
+    } catch (e) {
+      // ignored purposefully
+    }
 
     if (!isValid) {
       throw Error('Invalid credentials');
@@ -50,7 +55,8 @@ const api = {
       username: user.username,
       name: user.name,
       company: user.company,
-      userType: user.userType
+      userType: user.userType,
+      clientCode: user.clientCode
     };
   },
 
@@ -113,11 +119,11 @@ const api = {
    */
   resetPassword: async (username, securityQuestion, securityQuestionAnswer, newPassword) => {
     //validate inputs
-    if ( !username ) throw Error('username is required');
-    if ( !securityQuestion ) throw Error('securityQuestion is required');
-    if ( !securityQuestionAnswer ) throw Error('securityQuestionAnswer is required');
-    if ( !newPassword ) throw Error('newPassword is required');
-    if ( newPassword.length < 8 ) throw Error('password must be at least 8 characters long');
+    if ( !username ) throw Error('Login is required');
+    if ( !securityQuestion ) throw Error('Security Question is required');
+    if ( !securityQuestionAnswer ) throw Error('Security Answer is required');
+    if ( !newPassword ) throw Error('New Password is required');
+    if ( newPassword.length < 8 ) throw Error('New Password must be at least 8 characters long');
 
     // get user by username
     const user = await util.getUserData(username, '');
@@ -140,14 +146,42 @@ const api = {
   },
 
   /**
-   * Auth.isAdmin used with routes when sessions must be for admin role users to use them
-   * @param {object} req
-   * @param {object} resp
-   * @param {function} next express js uses this with routes to let it know when the route is working and should move on to the next function
+   * Signup
+   * @param {String} signupHash
+   * @param {String} username
+   * @param {String} securityQuestion
+   * @param {String} securityAnswer
+   * @param {String} password
    */
-  isAdmin: async (req, _resp, next) => {
-    const user = await util.getUserData('', req.header('x-session-id'));
-    if (user.userType == 'admin') return next();
+  signup: async (signupHash, username, securityQuestion, securityAnswer, password) => {
+    if ( !signupHash ) throw Error('signupHash is required');
+    if ( !securityQuestion ) throw Error('securityQuestion is required');
+    if ( !securityAnswer ) throw Error('securityQuestionAnswer is required');
+    if ( !password ) throw Error('password is required');
+    if ( password.length < 8 ) throw Error('password must be at least 8 characters long');
+
+    // get user by username
+    const user = await util.getUserData(username, '');
+    if (!user) throw Error('Invalid signup link');
+
+    // check the security question and answers match
+    if (user.signupHash != signupHash) {
+      throw Error('Invalid signup link');
+    }
+
+    //create the password hash
+    const pword = await bcrypt.hash(password, saltRounds);
+
+    // change the user's password
+    await util.updateUserData({
+      username: username,
+      password: pword,
+      securityQuestion: securityQuestion,
+      securityAnswer: securityAnswer,
+      sessionID: '', //reset session as well as a security precaution
+      signupHash: '',
+      active: 1
+    });
   }
 };
 

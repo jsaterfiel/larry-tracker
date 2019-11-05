@@ -57,7 +57,6 @@ const api = {
       data.start_time = parseInt(input.hw);
       const startDate = new Date(parseInt(data.start_time));
       data.start_date = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
-      console.log(data.start_date);
     } else {
       // invalid pixel
       return;
