@@ -60,6 +60,9 @@ typings/
 # next.js build output
 .next
 
+# removing folder for webstorm ide
+.idea
+
 # temporarily just ignore the data folder till we have schemas to use here and sample data
 db/data
 
