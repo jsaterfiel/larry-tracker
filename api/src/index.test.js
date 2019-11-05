@@ -40,6 +40,9 @@ describe('loading express', () => {
           ivtCount: 0
         },
         {
+          startDate: '2019-09-29'
+        },
+        {
           startDate: '2019-09-30',
           impressions: 1,
           dentsuOTSCount: 0,
@@ -95,6 +98,7 @@ describe('loading express', () => {
       })
       .expect('x-session-id', /.?/)
       .expect(200, {
+        clientCode: 'client_1',
         username: 'testUserLogin',
         name: 'Test User Login',
         company: 'Larry Tracker',

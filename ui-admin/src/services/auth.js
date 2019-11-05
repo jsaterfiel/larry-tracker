@@ -15,6 +15,10 @@ if (loginData && loginSessionID) {
 }
 
 const api = {
+  /**
+   * @param {string} username
+   * @param {string} password
+   */
   login: async (username, password) => {
     let result;
     
@@ -45,6 +49,12 @@ const api = {
     return result.data;
   },
 
+  /**
+   * @param {string} username
+   * @param {string} securityQuestion
+   * @param {string} securityAnswer
+   * @param {string} newPassword
+   */
   resetPassword: async (username, securityQuestion, securityAnswer, newPassword) => {
     await apiInstance.post('api/resetPassword', {
       username: username,
@@ -55,6 +65,13 @@ const api = {
     return true;
   },
   
+  /**
+   * @param {string} signupHash
+   * @param {string} username
+   * @param {string} securityQuestion
+   * @param {string} securityAnswer
+   * @param {string} password
+   */
   signup: async (signupHash, username, securityQuestion, securityAnswer, password) => {
     await apiInstance.post('api/signup', {
       signupHash: signupHash,
