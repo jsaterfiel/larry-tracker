@@ -277,7 +277,7 @@ class Dashboard extends Component {
                                         >
                                             <CartesianGrid strokeDasharray="3 3" />
                                             <XAxis dataKey="startDate"/>
-                                            <YAxis dataKey="impressions"/>
+                                            <YAxis/>
 
                                             <Tooltip />
                                             <Legend />
