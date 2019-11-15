@@ -12,6 +12,16 @@ services:
       - ./api/tests:/usr/src/app/tests
     depends_on:
       - ch-server-1
+  js-tag:
+    build:
+      context: ./js-tag
+      dockerfile: Dockerfile
+    image: larry-tracker/js-tag:latest
+    ports:
+      - 8383:8383
+    volumes:
+      - ./js-tag/dist:/usr/src/app/dist
+      - ./js-tag/src:/usr/src/app/src
   test-site:
     build:
       context: ./test-site

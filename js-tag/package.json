@@ -2,14 +2,17 @@
   "name": "js-tag",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run-script build && npm run-script serve",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "./node_modules/.bin/serve -s -l 8383 dist",
+    "build": "./node_modules/.bin/gulp js-compile"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "serve": "^11.2.0"
   },
   "devDependencies": {
     "google-closure-compiler": "^20190929.0.0",
