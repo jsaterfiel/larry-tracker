@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Card, Container, Alert, Row, Col, Navbar, Form, NavDropdown } from 'react-bootstrap';
+import { Redirect } from 'react-router-dom';
 import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import DatePicker from '../components/DatePicker';
 import AuthAPI from '../services/auth';
@@ -210,6 +211,11 @@ class Dashboard extends Component {
     }
 
     render() {
+        // check if the user is logged in and is an admin.  Using a redirect below to take non admins back to home.
+        const loginData = AuthAPI.getLoginData();
+        if (!loginData) {
+        return  <Redirect to='/' />;
+        }
         return (
             <div className="DashboardPage">
                 <Container>
