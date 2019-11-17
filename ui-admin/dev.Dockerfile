@@ -15,8 +15,6 @@ RUN [ "npm", "install" ]
 
 # Bundle app source
 COPY  . .
-
 EXPOSE 8080
-
 # dev doesn't need to do a full build
 CMD [ "npm", "run", "start" ]
