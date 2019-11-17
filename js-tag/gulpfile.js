@@ -3,7 +3,7 @@ const closureCompiler = require('google-closure-compiler').gulp();
 const sourcemaps = require('gulp-sourcemaps');
 
 gulp.task('js-compile', function () {
-  return gulp.src('./src/**/*.js', {base: './'})
+  return gulp.src('./src/*.js', {base: './'})
     .pipe(closureCompiler({
       compilation_level: 'ADVANCED',
       warning_level: 'VERBOSE',
