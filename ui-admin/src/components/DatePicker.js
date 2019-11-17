@@ -8,13 +8,15 @@ import { formatDate, parseDate } from 'react-day-picker/moment';
 
 export default class DatePicker extends React.Component {
     constructor(props) {
+        let startDate = new Date();
+        startDate.setDate(startDate.getDate()-3);
         super(props);
         this.dateChanged = props.dateChanged;
         this.handleFromChange = this.handleFromChange.bind(this);
         this.handleToChange = this.handleToChange.bind(this);
         this.state = {
-            from: undefined,
-            to: undefined,
+            from: startDate,
+            to: new Date(),
         };
     }
 
