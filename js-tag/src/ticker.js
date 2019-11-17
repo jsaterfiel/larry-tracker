@@ -34,7 +34,7 @@ class Ticker extends Base{
   }
 
   _tick() {
-    let delta = 0;
+    let delta = 200;
     let nextTick = Date.now();
     if (this._lastTick > 0) {
       delta = nextTick - this._lastTick;
