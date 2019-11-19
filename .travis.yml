@@ -33,3 +33,7 @@ script:
   - cd ui-admin
   - npm install
   - npm run test
+  - cd ..
+  - cd js-tag
+  - npm install
+  - npm test
