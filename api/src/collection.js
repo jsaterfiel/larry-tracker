@@ -18,6 +18,7 @@ const api = {
    *   Client Code - pcode (required)
    *   Level 1 - level1 (required)
    *   Start Time - hw (required)
+   *   Start Date - fc (required)
    *   Random(Ordinal) - ord (required)
    *   Dentsu OTS Metric - ba (default false)
    *   Total Dwell Time - ac (default 0)
@@ -53,10 +54,15 @@ const api = {
       return;
     }
     // Start Time
-    if (input.hw && input.hw > 0) {
+    if (input.hw) {
       data.start_time = parseInt(input.hw);
-      const startDate = new Date(parseInt(data.start_time));
-      data.start_date = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + startDate.getDate();
+    } else {
+      // invalid pixel
+      return;
+    }
+    // Start Date
+    if (input.fc) {
+      data.start_date = input.fc;
     } else {
       // invalid pixel
       return;

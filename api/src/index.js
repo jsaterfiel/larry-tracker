@@ -88,6 +88,7 @@ app.get('/api/ping', async (_req, res) => {
  * @param {string} pcode.query.required example: client1
  * @param {string} level1.query.required example: 1112
  * @param {number} hw.query.required startTime example: 1569685960721
+ * @param {string} fc.query.required startDate example: 2019-11-19
  * @param {number} ord.query.required Random example: 33346862409425390
  * @param {number} ba.query Dentsu OTS Metric example:  1
  * @param {number} ac.query Total Dwell Time example: 1
