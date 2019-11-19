@@ -32,7 +32,8 @@ class Pixel extends Base{
     const params = {
       'pcode': this._pcode,
       'level1': this._level1,
-      'hw': this._startTime,
+      'hw': this._startTime.getTime(),
+      'fc': this._startTime.getFullYear() + '-' + (this._startTime.getMonth()+1) + '-' + (this._startTime.getDate()),
       'ord': this._rand,
       'ba': this._ticker.isDentsuOTS(),
       'ac': this._ticker.getDwellTime(),

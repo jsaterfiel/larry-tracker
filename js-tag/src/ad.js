@@ -17,7 +17,7 @@ class Ad extends Base{
     this._ticker = new Ticker(el, pcode, level1, win, this._signals);
     
     // these values uniquely identifies an impression
-    this._startTime = Date.now();
+    this._startTime = new Date();
     this._rand = Math.floor(Math.random() * 100000000000000000);
     this._maxloops = 20;
 
