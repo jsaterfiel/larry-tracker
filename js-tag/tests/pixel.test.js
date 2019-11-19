@@ -33,7 +33,7 @@ describe('pixel.js', () => {
         return true;
       }
     };
-    const pixel = new Pixel(el, 'client1', '12345', window, fakeSignal, fakeTicker, new Date(1559444444444), 111111111111);
+    const pixel = new Pixel(el, 'client1', '12345', window, fakeSignal, fakeTicker, new Date('Tue Nov 19 2019 01:36:33 GMT-0500'), 111111111111);
 
     //saving so it can be restored after the test
     const originalSendBeacon = window.navigator.sendBeacon;
