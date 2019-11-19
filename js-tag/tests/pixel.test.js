@@ -39,7 +39,7 @@ describe('pixel.js', () => {
     const originalSendBeacon = window.navigator.sendBeacon;
     
     window.navigator.sendBeacon = url => {
-      expect(url).toBe('http://localhost:8181/api/collection?pcode=client1&level1=12345&hw=1559444444444&fc=2019-6-1&ord=111111111111&ba=1&ac=200&ct=200&gs=1&ef=1&fa=1&rt=1');
+      expect(url).toBe('http://localhost:8181/api/collection?pcode=client1&level1=12345&hw=1574145393000&fc=2019-11-19&ord=111111111111&ba=1&ac=200&ct=200&gs=1&ef=1&fa=1&rt=1');
 
       //clean up
       window.navigator.sendBeacon = originalSendBeacon;
