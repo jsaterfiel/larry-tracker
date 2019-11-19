@@ -11,7 +11,7 @@ class Pixel extends Base{
    * @param {Window} win
    * @param {Signals} signal
    * @param {Ticker} ticker
-   * @param {number} startTime
+   * @param {Date} startTime
    * @param {number} rand
    */
   constructor(el, pcode, level1, win, signal, ticker, startTime, rand) {
