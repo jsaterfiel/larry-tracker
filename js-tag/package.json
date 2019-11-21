@@ -2,18 +2,27 @@
   "name": "js-tag",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run-script build && npm run-script serve",
+    "test": "jest",
+    "serve": "./node_modules/.bin/serve -s -l 8383 dist",
+    "build": "./node_modules/.bin/gulp js-compile"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nodemon": "^1.19.3"
+    "nodemon": "^1.19.3",
+    "serve": "^11.2.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^24.9.0",
+    "babel-preset-env": "^1.7.0",
     "google-closure-compiler": "^20190929.0.0",
     "gulp": "^4.0.2",
-    "gulp-sourcemaps": "^2.6.5"
+    "gulp-sourcemaps": "^2.6.5",
+    "jest": "^24.9.0"
   }
 }

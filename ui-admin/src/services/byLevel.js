@@ -9,8 +9,11 @@ const api = {
    * @param {Date} endDate
    */
   byLevel: async (clientCode, level1, startDate, endDate) => {
+    //to deal with an issue with the end date only returning data up to and not including itself we need to increment the date by 1
+    const offsetEndDate = new Date(endDate.getTime());
+
     let startDateStr = startDate.getFullYear() + '-' + (startDate.getMonth()+1) + '-' + (startDate.getDate());
-    let endDateStr = endDate.getFullYear() + '-' + (endDate.getMonth()+1) + '-' + (endDate.getDate());
+    let endDateStr = offsetEndDate.getFullYear() + '-' + (offsetEndDate.getMonth()+1) + '-' + (offsetEndDate.getDate());
 
     let qs = `?startDate=${startDateStr}&endDate=${endDateStr}`;
     if (clientCode) {
