@@ -47,7 +47,10 @@ export default class DatePicker extends React.Component {
 
     render() {
         const { from, to } = this.state;
-        const modifiers = { start: from, end: to };
+        const modifiers = {
+            start: from,
+            end: to
+        };
         return (
             <div className="InputFromTo">
                 <DayPickerInput
@@ -58,9 +61,9 @@ export default class DatePicker extends React.Component {
                     parseDate={parseDate}
                     dayPickerProps={{
                         selectedDays: [from, { from, to }],
-                        disabledDays: { after: to },
+                        disabledDays: [{ after: to }, { after: new Date()}],
                         toMonth: to,
-                        modifiers,
+                        modifiers: modifiers,
                         numberOfMonths: 2,
                         onDayClick: () => this.to.getInput().focus(),
                     }}
@@ -69,6 +72,11 @@ export default class DatePicker extends React.Component {
                 —{' '}
                 <span className="InputFromTo-to">
           <DayPickerInput
+              disabledDays={[
+                  {
+                      after: new Date(),
+                  },
+              ]}
               ref={el => (this.to = el)}
               value={to}
               placeholder="To"
@@ -77,8 +85,8 @@ export default class DatePicker extends React.Component {
               parseDate={parseDate}
               dayPickerProps={{
                   selectedDays: [from, { from, to }],
-                  disabledDays: { before: from },
-                  modifiers,
+                  disabledDays: [{ before: from }, { after: new Date()}],
+                  modifiers: modifiers,
                   month: from,
                   fromMonth: from,
                   numberOfMonths: 2,
